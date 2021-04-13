@@ -52,5 +52,5 @@ jobs:
       with:
         app-name: 'RecipeBoxApp'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_608402fad44e4b16a095991233ff2409 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_d788a48335174a7da1f229740309221b }}
         package: .
