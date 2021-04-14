@@ -21,16 +21,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const router = express.Router();
-/* POST /users/signup */
-router.post(['/signup'], (req, res, next) => {
-    console.log('signup');
-    res.status(200).send('signup');
+/* POST User Data */
+router.post('/', (req, res, next) => {
+    console.log('tags post');
+    res.send('tags post');
 });
-/* GET User Data */
-router.get(['/info'], (req, res, next) => {
-    console.log('info');
-    res.status(200).send('info');
+/* GET /content/recipes?id=<uuid> */
+router.get('/', (req, res, next) => {
+    console.log('tags get');
+    res.send('tags get');
 });
-const usersRouter = router;
-exports.default = usersRouter;
-//# sourceMappingURL=users.js.map
+/* DELETE /content/recipes?id=<uuid> */
+router.delete('/', (req, res, next) => {
+    console.log('tags delete');
+    res.send('tags delete');
+});
+const tagsRouter = router;
+exports.default = tagsRouter;
+//# sourceMappingURL=tags.js.map

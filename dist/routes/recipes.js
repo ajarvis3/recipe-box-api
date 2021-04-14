@@ -21,16 +21,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const router = express.Router();
-/* POST /users/signup */
-router.post(['/signup'], (req, res, next) => {
-    console.log('signup');
-    res.status(200).send('signup');
+/* POST Recipe Data */
+router.post('/', (req, res, next) => {
+    console.log('post');
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ blerg: 'recipes post' });
+    res.end();
 });
-/* GET User Data */
-router.get(['/info'], (req, res, next) => {
-    console.log('info');
-    res.status(200).send('info');
-});
-const usersRouter = router;
-exports.default = usersRouter;
-//# sourceMappingURL=users.js.map
+// /* PATCH /content/recipes?id=<uuid> */
+// router.patch('/', (req, res, next) => {
+//     console.log('patch');
+//     res.send('recipes patch');
+// });
+// /* GET /content/recipes?id=<uuid> */
+// router.get('/', (req, res, next) => {
+//     console.log('get');
+//     res.send('recipes get');
+// });
+// /* DELETE /content/recipes?id=<uuid> */
+// router.delete('/', (req, res, next) => {
+//     console.log('delete');
+//     res.send('recipes delete');
+// });
+const recipesRouter = router;
+exports.default = recipesRouter;
+//# sourceMappingURL=recipes.js.map
