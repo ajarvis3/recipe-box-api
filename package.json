@@ -6,7 +6,6 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
-    "prestart": "yarn build",
     "start": "node ."
   },
   "dependencies": {
