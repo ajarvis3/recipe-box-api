@@ -35,7 +35,7 @@ UserSchema.methods.verifyUser = function (pw: string) {
   const hash = crypto
     .pbkdf2Sync(pw, this.salt, ITERATIONS, KEY_LEN, "sha512")
     .toString("hex");
-  return this.passwordHash == hash;
+  return this.passwordHash === hash;
 };
 
 const User: mongoose.Model<IUser> = mongoose.model("User", UserSchema);
