@@ -33,7 +33,7 @@ const router = express.Router();
 router.post("/", (req, res, next) => {
     const body = req.body;
     if (!body.password) {
-        res.status(401).send();
+        res.status(401).send(req.body);
         return;
     }
     const uuid = uuid_1.v4();
@@ -44,7 +44,7 @@ router.post("/", (req, res, next) => {
     // Cosmos doesn't support unique :(
     user_1.default.findOne({ email: req.body.email }).then((use) => {
         if (use !== null) {
-            res.status(401).send();
+            res.status(401).send(req.body);
             return;
         }
     });
@@ -59,7 +59,7 @@ router.post("/", (req, res, next) => {
     });
     user.save((err, saveUser) => {
         if (err) {
-            res.status(401).send();
+            res.status(401).send(req.body);
         }
         else {
             const token = tokengenerator_1.default(user);
