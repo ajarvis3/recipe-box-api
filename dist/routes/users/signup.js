@@ -27,9 +27,11 @@ const auth_1 = require("../../utils/auth");
 const uuid_1 = require("uuid");
 const user_1 = __importDefault(require("../../models/user"));
 const connect_1 = __importDefault(require("../../utils/db/connect"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const router = express.Router();
 /* POST signup data */
 router.post("/", (req, res, next) => {
+    console.log("post");
     const body = req.body;
     if (!body.password) {
         res.status(401).send();
@@ -40,6 +42,14 @@ router.post("/", (req, res, next) => {
     const salt = auth_1.getSalt();
     const hash = auth_1.hashPassword(req.body.password, salt);
     connect_1.default();
+    // Cosmos doesn't support unique :(
+    user_1.default.findOne({ email: req.body.email }).then((use) => {
+        console.log("blah " + use);
+        if (use !== null) {
+            res.status(401).send();
+            return;
+        }
+    });
     const user = new user_1.default({
         uuid,
         firstName: req.body.firstName,
@@ -54,7 +64,12 @@ router.post("/", (req, res, next) => {
             res.status(401).send(process.env.DB_HOST + " " + process.env.NODE_ENV);
         }
         else {
-            res.status(200).send();
+            console.log("here");
+            const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.secret, {
+                expiresIn: 86400, // expires in 24 hours
+            });
+            console.log(token);
+            res.status(200).send({ auth: true, token });
         }
     });
 });
