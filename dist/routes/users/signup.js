@@ -18,15 +18,46 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
+const auth_1 = require("../../utils/auth");
+const uuid_1 = require("uuid");
+const user_1 = __importDefault(require("../../models/user"));
+const connect_1 = __importDefault(require("../../utils/db/connect"));
 const router = express.Router();
 /* POST signup data */
-router.get("/", (req, res, next) => {
-    console.log("post");
-    res.setHeader("Content-Type", "application/json");
-    res.json({ blerg: "recipes post" });
+router.post("/", (req, res, next) => {
+    const body = req.body;
+    if (!body.password) {
+        res.status(401).send();
+        return;
+    }
+    const uuid = uuid_1.v4();
+    const timeCreated = Date.now();
+    const salt = auth_1.getSalt();
+    const hash = auth_1.hashPassword(req.body.password, salt);
+    connect_1.default();
+    const user = new user_1.default({
+        uuid,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        passwordHash: hash,
+        salt,
+        timeCreated,
+    });
+    user.save((err, saveUser) => {
+        if (err) {
+            res.status(401).send(saveUser);
+        }
+        else {
+            res.status(200).send();
+        }
+    });
 });
-const indexRouter = router;
-exports.default = indexRouter;
+const signupRouter = router;
+exports.default = signupRouter;
 //# sourceMappingURL=signup.js.map

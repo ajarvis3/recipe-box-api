@@ -23,10 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
+const connect_1 = __importDefault(require("../../utils/db/connect"));
 const user_1 = __importDefault(require("../../models/user"));
 const router = express.Router();
 /* POST signin data */
 router.post("/", (req, res, next) => {
+    connect_1.default();
     const failed = () => res.status(401).send();
     user_1.default.findOne({ email: req.body.email }).then((user) => {
         if (user.verifyUser(req.body.password)) {

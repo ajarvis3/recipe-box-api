@@ -23,10 +23,13 @@ const express = __importStar(require("express"));
 const path = __importStar(require("path"));
 const router = express.Router();
 /* GET home page. */
-router.get(['/', '/*'], (req, res, next) => {
+router.get(["/", "/*"], (req, res, next) => {
     const pth = path.join(__dirname, "../../public", "index.html");
     console.log(pth);
     res.sendFile(pth);
+});
+router.post(["/", "/*"], (req, res, next) => {
+    console.log("post");
 });
 const indexRouter = router;
 exports.default = indexRouter;

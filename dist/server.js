@@ -27,23 +27,26 @@ const express_1 = __importDefault(require("express"));
 const path = __importStar(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const index_1 = __importDefault(require("./routes/index"));
-const users_1 = __importDefault(require("./routes/users"));
 const recipes_1 = __importDefault(require("./routes/recipes"));
 const tags_1 = __importDefault(require("./routes/tags"));
+const signup_1 = __importDefault(require("./routes/users/signup"));
 const app = express_1.default();
 const port = 8080; // default port to listen
 const consolidate_1 = __importDefault(require("consolidate"));
-app.set('view engine', 'html');
-app.engine('html', consolidate_1.default.mustache);
+const signin_1 = __importDefault(require("./routes/auth/signin"));
+app.set("view engine", "html");
+app.engine("html", consolidate_1.default.mustache);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookie_parser_1.default());
-app.use(express_1.default.static(path.join(__dirname, '..', 'public')));
+app.use(express_1.default.static(path.join(__dirname, "..", "public")));
 // routes
-app.use('/users', users_1.default);
-app.use('/content/recipes', recipes_1.default);
-app.use('/content/tags', tags_1.default);
-app.use('/', index_1.default);
+// app.use("/users", usersRouter);
+app.use("/users/signup", signup_1.default); // doesn't work with post
+app.use("/auth/signin", signin_1.default);
+app.use("/content/recipes", recipes_1.default);
+app.use("/content/tags", tags_1.default);
+app.use("/", index_1.default);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
     // console.log(req, res, next);
@@ -54,10 +57,10 @@ app.use((err, req, res, next) => {
     // console.log(req, res, next);
     // set locals, only providing error in development
     res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.locals.error = req.app.get("env") === "development" ? err : {};
     // render the error page
     res.status(err.status || 500);
-    res.send('error');
+    res.send("error");
 });
 // start the Express server
 app.listen(port, () => {
