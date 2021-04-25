@@ -9,8 +9,15 @@ import recipesRouter from "./routes/recipes";
 import tagsRouter from "./routes/tags";
 import signupRouter from "./routes/users/signup";
 
+import cors from "cors";
+
 const app = express();
 const port = process.env.PORT || 8080; // default port to listen
+
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors());
+  app.options("*", cors());
+}
 
 import engine from "consolidate";
 import signInRouter from "./routes/auth/signin";

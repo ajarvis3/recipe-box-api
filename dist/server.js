@@ -30,8 +30,13 @@ const index_1 = __importDefault(require("./routes/index"));
 const recipes_1 = __importDefault(require("./routes/recipes"));
 const tags_1 = __importDefault(require("./routes/tags"));
 const signup_1 = __importDefault(require("./routes/users/signup"));
+const cors_1 = __importDefault(require("cors"));
 const app = express_1.default();
 const port = process.env.PORT || 8080; // default port to listen
+if (process.env.NODE_ENV !== "production") {
+    app.use(cors_1.default());
+    app.options("*", cors_1.default());
+}
 const consolidate_1 = __importDefault(require("consolidate"));
 const signin_1 = __importDefault(require("./routes/auth/signin"));
 const verify_1 = __importDefault(require("./routes/auth/verify"));

@@ -33,7 +33,7 @@ const router = express.Router();
 router.post("/", (req, res, next) => {
     const body = req.body;
     if (!body.password) {
-        res.status(401).send(req.body);
+        res.status(401).send();
         return;
     }
     const uuid = uuid_1.v4();
@@ -41,29 +41,32 @@ router.post("/", (req, res, next) => {
     const salt = auth_1.getSalt();
     const hash = auth_1.hashPassword(req.body.password, salt);
     connect_1.default();
+    console.log("here");
     // Cosmos doesn't support unique :(
     user_1.default.findOne({ email: req.body.email }).then((use) => {
         if (use !== null) {
-            res.status(401).send(req.body);
+            res.status(401).send();
             return;
         }
-    });
-    const user = new user_1.default({
-        uuid,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        passwordHash: hash,
-        salt,
-        timeCreated,
-    });
-    user.save((err, saveUser) => {
-        if (err) {
-            res.status(401).send(req.body);
-        }
         else {
-            const token = tokengenerator_1.default(user);
-            res.status(200).send({ auth: true, token });
+            const user = new user_1.default({
+                uuid,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                passwordHash: hash,
+                salt,
+                timeCreated,
+            });
+            user.save((err, saveUser) => {
+                if (err) {
+                    res.status(401).send();
+                }
+                else {
+                    const token = tokengenerator_1.default(user);
+                    res.status(200).send({ auth: true, token });
+                }
+            });
         }
     });
 });

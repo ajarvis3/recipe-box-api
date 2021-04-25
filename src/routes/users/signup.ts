@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/", (req, res, next) => {
    const body = req.body;
    if (!body.password) {
-      res.status(401).send(req.body);
+      res.status(401).send();
       return;
    }
 
@@ -21,32 +21,35 @@ router.post("/", (req, res, next) => {
    const hash = hashPassword(req.body.password, salt);
 
    startDb();
+   console.log("here");
 
    // Cosmos doesn't support unique :(
    User.findOne({ email: req.body.email }).then((use) => {
       if (use !== null) {
-         res.status(401).send(req.body);
+         res.status(401).send();
          return;
+      } else {
+            const user = new User({
+              uuid,
+              firstName: req.body.firstName,
+              lastName: req.body.lastName,
+              email: req.body.email,
+              passwordHash: hash,
+              salt,
+              timeCreated,
+            });
+            user.save((err, saveUser) => {
+              if (err) {
+                res.status(401).send();
+              } else {
+                const token = getToken(user);
+                res.status(200).send({ auth: true, token });
+              }
+            });
+
       }
    });
 
-   const user = new User({
-      uuid,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      passwordHash: hash,
-      salt,
-      timeCreated,
-   });
-   user.save((err, saveUser) => {
-      if (err) {
-         res.status(401).send(req.body);
-      } else {
-         const token = getToken(user);
-         res.status(200).send({ auth: true, token });
-      }
-   });
 });
 
 const signupRouter = router;
