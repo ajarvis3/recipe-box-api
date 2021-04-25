@@ -51,7 +51,7 @@ router.post("/", (req, res, next) => {
     });
     user.save((err, saveUser) => {
         if (err) {
-            res.status(401).send(saveUser);
+            res.status(401).send(process.env.DB_HOST + " " + process.env.NODE_ENV);
         }
         else {
             res.status(200).send();
