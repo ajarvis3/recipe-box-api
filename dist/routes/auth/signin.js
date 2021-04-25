@@ -28,6 +28,9 @@ const user_1 = __importDefault(require("../../models/user"));
 const router = express.Router();
 /* POST signin data */
 router.post("/", (req, res, next) => {
+    if (!req.body.password || !req.body.email) {
+        res.status(400).send();
+    }
     connect_1.default();
     const failed = () => res.status(401).send();
     user_1.default.findOne({ email: req.body.email }).then((user) => {

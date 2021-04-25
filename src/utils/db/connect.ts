@@ -13,6 +13,7 @@ function startMongo(process: NodeJS.Process) {
 
    const env = process.env.NODE_ENV || "development";
 
+   console.log(env);
    let connString =
       "mongodb://" +
       process.env.DB_HOST +
@@ -32,6 +33,7 @@ function startMongo(process: NodeJS.Process) {
       };
       connString += "?ssl=true&replicaSet=globaldb&retryWrites=false";
    }
+   console.log(process.env.DB_HOST);
    mongoose
       .connect(connString, options)
       .then(() => console.log("Connection to Mongo successful"))

@@ -11,6 +11,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 function startMongo(process) {
     dotenv_1.default.config();
     const env = process.env.NODE_ENV || "development";
+    console.log(env);
     let connString = "mongodb://" +
         process.env.DB_HOST +
         ":" +
@@ -25,6 +26,7 @@ function startMongo(process) {
         options = Object.assign(Object.assign({}, options), { user: process.env.DB_USER, pass: process.env.DB_PASSWORD });
         connString += "?ssl=true&replicaSet=globaldb&retryWrites=false";
     }
+    console.log(process.env.DB_HOST);
     mongoose_1.default
         .connect(connString, options)
         .then(() => console.log("Connection to Mongo successful"))
