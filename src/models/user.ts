@@ -5,18 +5,7 @@
 import mongoose from "mongoose";
 import getSalt from "../utils/auth/salting";
 import hashPassword from "../utils/auth/hashing";
-
-interface IUser extends mongoose.Document {
-   uuid: string;
-   firstName: string;
-   lastName: string;
-   email: string;
-   passwordHash: string;
-   salt: string;
-   timeCreated: number;
-   setPassword: (pw: string) => void;
-   verifyUser: (pw: string) => boolean;
-}
+import IUser from "./types/user";
 
 const UserSchema = new mongoose.Schema<IUser>({
    uuid: {

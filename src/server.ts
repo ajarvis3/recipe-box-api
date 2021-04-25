@@ -14,6 +14,7 @@ const port = process.env.PORT || 8080; // default port to listen
 
 import engine from "consolidate";
 import signInRouter from "./routes/auth/signin";
+import verifyRouter from "./routes/auth/verify";
 
 app.set("view engine", "html");
 app.engine("html", engine.mustache);
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // app.use("/users", usersRouter);
 app.use("/users/signup", signupRouter); // doesn't work with post
 app.use("/auth/signin", signInRouter);
+app.use("/auth/verify", verifyRouter);
 app.use("/content/recipes", recipesRouter);
 app.use("/content/tags", tagsRouter);
 app.use("/", indexRouter);

@@ -1,7 +1,7 @@
 import * as express from "express";
-import * as path from "path";
 import startDb from "../../utils/db/connect";
 import User from "../../models/user";
+import getToken from "../../utils/auth/tokengenerator";
 
 const router = express.Router();
 
@@ -15,7 +15,8 @@ router.post("/", (req, res, next) => {
    const failed = () => res.status(401).send();
    User.findOne({ email: req.body.email }).then((user) => {
       if (user.verifyUser(req.body.password)) {
-         res.status(200).send(); // do things with jwt
+         const token = getToken(user);
+         res.status(200).send({ auth: true, token });
       } else {
          failed();
       }

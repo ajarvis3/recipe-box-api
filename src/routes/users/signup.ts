@@ -1,10 +1,9 @@
 import * as express from "express";
-import * as path from "path";
 import { getSalt, hashPassword } from "../../utils/auth";
 import { v4 as uuidv4 } from "uuid";
 import User from "../../models/user";
 import startDb from "../../utils/db/connect";
-import jwt from "jsonwebtoken";
+import getToken from "../../utils/auth/tokengenerator";
 
 const router = express.Router();
 
@@ -44,9 +43,7 @@ router.post("/", (req, res, next) => {
       if (err) {
          res.status(401).send();
       } else {
-         const token = jwt.sign({ id: user._id }, process.env.secret, {
-            expiresIn: 86400, // expires in 24 hours
-         });
+         const token = getToken(user);
          res.status(200).send({ auth: true, token });
       }
    });

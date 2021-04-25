@@ -34,6 +34,7 @@ const app = express_1.default();
 const port = process.env.PORT || 8080; // default port to listen
 const consolidate_1 = __importDefault(require("consolidate"));
 const signin_1 = __importDefault(require("./routes/auth/signin"));
+const verify_1 = __importDefault(require("./routes/auth/verify"));
 app.set("view engine", "html");
 app.engine("html", consolidate_1.default.mustache);
 app.use(express_1.default.json());
@@ -44,6 +45,7 @@ app.use(express_1.default.static(path.join(__dirname, "..", "public")));
 // app.use("/users", usersRouter);
 app.use("/users/signup", signup_1.default); // doesn't work with post
 app.use("/auth/signin", signin_1.default);
+app.use("/auth/verify", verify_1.default);
 app.use("/content/recipes", recipes_1.default);
 app.use("/content/tags", tags_1.default);
 app.use("/", index_1.default);

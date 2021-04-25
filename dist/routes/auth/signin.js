@@ -25,6 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const connect_1 = __importDefault(require("../../utils/db/connect"));
 const user_1 = __importDefault(require("../../models/user"));
+const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerator"));
 const router = express.Router();
 /* POST signin data */
 router.post("/", (req, res, next) => {
@@ -35,7 +36,8 @@ router.post("/", (req, res, next) => {
     const failed = () => res.status(401).send();
     user_1.default.findOne({ email: req.body.email }).then((user) => {
         if (user.verifyUser(req.body.password)) {
-            res.status(200).send(); // do things with jwt
+            const token = tokengenerator_1.default(user);
+            res.status(200).send({ auth: true, token });
         }
         else {
             failed();
