@@ -10,7 +10,7 @@ import tagsRouter from "./routes/tags";
 import signupRouter from "./routes/users/signup";
 
 const app = express();
-const port = 8080; // default port to listen
+const port = process.env.PORT || 8080; // default port to listen
 
 import engine from "consolidate";
 import signInRouter from "./routes/auth/signin";

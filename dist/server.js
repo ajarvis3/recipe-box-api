@@ -31,7 +31,7 @@ const recipes_1 = __importDefault(require("./routes/recipes"));
 const tags_1 = __importDefault(require("./routes/tags"));
 const signup_1 = __importDefault(require("./routes/users/signup"));
 const app = express_1.default();
-const port = 8080; // default port to listen
+const port = process.env.PORT || 8080; // default port to listen
 const consolidate_1 = __importDefault(require("consolidate"));
 const signin_1 = __importDefault(require("./routes/auth/signin"));
 app.set("view engine", "html");
