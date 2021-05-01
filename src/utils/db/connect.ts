@@ -1,16 +1,9 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-interface IAuth {
-   [key: string]: any;
-}
 
 // VS Code reported that process was treated
 // as a local variable
 // so I'm just passing in the process now
 function startMongo(process: NodeJS.Process) {
-   dotenv.config();
-
    const env = process.env.NODE_ENV || "development";
 
    let connString =

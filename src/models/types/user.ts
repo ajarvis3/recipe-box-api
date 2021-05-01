@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Query } from "mongoose";
 
 interface IUser extends mongoose.Document {
    uuid: string;
@@ -8,8 +8,8 @@ interface IUser extends mongoose.Document {
    passwordHash: string;
    salt: string;
    timeCreated: number;
-   setPassword: (pw: string) => void;
-   verifyUser: (pw: string) => boolean;
+   setPassword: (password: string) => void;
+   verifyUser: (password: string) => boolean;
 }
 
 export default IUser;

@@ -23,11 +23,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const auth_1 = require("../../utils/auth");
-const uuid_1 = require("uuid");
-const user_1 = __importDefault(require("../../models/user"));
-const connect_1 = __importDefault(require("../../utils/db/connect"));
 const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerator"));
+const UserData_1 = __importDefault(require("../../utils/db/User/UserData"));
 const router = express.Router();
 /* POST signup data */
 router.post("/", (req, res, next) => {
@@ -36,32 +33,8 @@ router.post("/", (req, res, next) => {
         res.status(401).send();
         return;
     }
-    const uuid = uuid_1.v4();
-    const timeCreated = Date.now();
-    const salt = auth_1.getSalt();
-    const hash = auth_1.hashPassword(req.body.password, salt);
-    connect_1.default();
-    // Cosmos doesn't support unique :(
-    user_1.default.findOne({ email: req.body.email }).then((use) => {
-        if (use !== null) {
-            res.status(401).send();
-            return;
-        }
-    });
-    const user = new user_1.default({
-        uuid,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        passwordHash: hash,
-        salt,
-        timeCreated,
-    });
-    user.save((err, saveUser) => {
-        if (err) {
-            res.status(401).send();
-        }
-        else {
+    UserData_1.default.createAndSaveUser(req.body.email, req.body.password, req.body.firstName, req.body.lastName).then((user) => {
+        if (user) {
             const token = tokengenerator_1.default(user);
             res.status(200).send({ auth: true, token });
         }

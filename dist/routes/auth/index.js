@@ -18,26 +18,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const signin_1 = __importDefault(require("./signin"));
+const verify_1 = __importDefault(require("./verify"));
 const express = __importStar(require("express"));
 const router = express.Router();
-/* POST Recipe Data */
-router.post('/', (req, res, next) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ blerg: 'recipes post' });
-});
-/* PATCH /content/recipes?id=<uuid> */
-router.patch('/', (req, res, next) => {
-    res.send('recipes patch');
-});
-/* GET /content/recipes?id=<uuid> */
-router.get('/', (req, res, next) => {
-    res.send('recipes get');
-});
-/* DELETE /content/recipes?id=<uuid> */
-router.delete('/', (req, res, next) => {
-    res.send('recipes delete');
-});
-const recipesRouter = router;
-exports.default = recipesRouter;
-//# sourceMappingURL=recipes.js.map
+router.use("/signin", signin_1.default);
+router.use("/verify", verify_1.default);
+const authRouter = router;
+exports.default = authRouter;
+//# sourceMappingURL=index.js.map

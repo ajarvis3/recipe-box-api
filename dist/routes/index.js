@@ -18,18 +18,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const path = __importStar(require("path"));
+const auth_1 = __importDefault(require("./auth"));
+const index_1 = __importDefault(require("./content/index")); // this one doesn't work without index for some reason
+const users_1 = __importDefault(require("./users"));
 const router = express.Router();
+router.use("/auth", auth_1.default);
+router.use("/users", users_1.default);
+router.use("/content", index_1.default);
 /* GET home page. */
-router.get(["/", "/*"], (req, res, next) => {
+router.get(["/", "**"], (req, res, next) => {
     const pth = path.join(__dirname, "../../public", "index.html");
-    console.log(pth);
     res.sendFile(pth);
-});
-router.post(["/", "/*"], (req, res, next) => {
-    console.log("post");
 });
 const indexRouter = router;
 exports.default = indexRouter;

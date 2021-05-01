@@ -26,15 +26,12 @@ const http_errors_1 = __importDefault(require("http-errors"));
 const express_1 = __importDefault(require("express"));
 const path = __importStar(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const index_1 = __importDefault(require("./routes/index"));
-const recipes_1 = __importDefault(require("./routes/recipes"));
-const tags_1 = __importDefault(require("./routes/tags"));
-const signup_1 = __importDefault(require("./routes/users/signup"));
 const app = express_1.default();
 const port = process.env.PORT || 8080; // default port to listen
 const consolidate_1 = __importDefault(require("consolidate"));
-const signin_1 = __importDefault(require("./routes/auth/signin"));
-const verify_1 = __importDefault(require("./routes/auth/verify"));
+const connect_1 = __importDefault(require("./utils/db/connect"));
 app.set("view engine", "html");
 app.engine("html", consolidate_1.default.mustache);
 app.use(express_1.default.json());
@@ -42,21 +39,16 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookie_parser_1.default());
 app.use(express_1.default.static(path.join(__dirname, "..", "public")));
 // routes
-// app.use("/users", usersRouter);
-app.use("/users/signup", signup_1.default); // doesn't work with post
-app.use("/auth/signin", signin_1.default);
-app.use("/auth/verify", verify_1.default);
-app.use("/content/recipes", recipes_1.default);
-app.use("/content/tags", tags_1.default);
 app.use("/", index_1.default);
+dotenv_1.default.config();
+// move to server.ts
+connect_1.default();
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-    // console.log(req, res, next);
     next(http_errors_1.default(404));
 });
 // error handler
 app.use((err, req, res, next) => {
-    // console.log(req, res, next);
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "development" ? err : {};

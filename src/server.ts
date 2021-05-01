@@ -2,19 +2,15 @@ import createError from "http-errors";
 import express from "express";
 import * as path from "path";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 
 import indexRouter from "./routes/index";
-import usersRouter from "./routes/users";
-import recipesRouter from "./routes/recipes";
-import tagsRouter from "./routes/tags";
-import signupRouter from "./routes/users/signup";
 
 const app = express();
 const port = process.env.PORT || 8080; // default port to listen
 
 import engine from "consolidate";
-import signInRouter from "./routes/auth/signin";
-import verifyRouter from "./routes/auth/verify";
+import startDb from "./utils/db/connect";
 
 app.set("view engine", "html");
 app.engine("html", engine.mustache);
@@ -25,23 +21,20 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 // routes
-// app.use("/users", usersRouter);
-app.use("/users/signup", signupRouter); // doesn't work with post
-app.use("/auth/signin", signInRouter);
-app.use("/auth/verify", verifyRouter);
-app.use("/content/recipes", recipesRouter);
-app.use("/content/tags", tagsRouter);
 app.use("/", indexRouter);
+
+dotenv.config();
+
+// move to server.ts
+startDb();
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-   // console.log(req, res, next);
    next(createError(404));
 });
 
 // error handler
 app.use((err: any, req: any, res: any, next: any) => {
-   // console.log(req, res, next);
    // set locals, only providing error in development
    res.locals.message = err.message;
    res.locals.error = req.app.get("env") === "development" ? err : {};

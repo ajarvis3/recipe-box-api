@@ -1,9 +1,7 @@
 import * as express from "express";
-import { getSalt, hashPassword } from "../../utils/auth";
-import { v4 as uuidv4 } from "uuid";
-import User from "../../models/user";
-import startDb from "../../utils/db/connect";
 import getToken from "../../utils/auth/tokengenerator";
+import UserData from "../../utils/db/User/UserData";
+import IUser from "../../models/types/user";
 
 const router = express.Router();
 
@@ -15,34 +13,13 @@ router.post("/", (req, res, next) => {
       return;
    }
 
-   const uuid = uuidv4();
-   const timeCreated = Date.now();
-   const salt = getSalt();
-   const hash = hashPassword(req.body.password, salt);
-
-   startDb();
-
-   // Cosmos doesn't support unique :(
-   User.findOne({ email: req.body.email }).then((use) => {
-      if (use !== null) {
-         res.status(401).send();
-         return;
-      }
-   });
-
-   const user = new User({
-      uuid,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      passwordHash: hash,
-      salt,
-      timeCreated,
-   });
-   user.save((err, saveUser) => {
-      if (err) {
-         res.status(401).send();
-      } else {
+   UserData.createAndSaveUser(
+      req.body.email,
+      req.body.password,
+      req.body.firstName,
+      req.body.lastName
+   ).then((user: IUser) => {
+      if (user) {
          const token = getToken(user);
          res.status(200).send({ auth: true, token });
       }

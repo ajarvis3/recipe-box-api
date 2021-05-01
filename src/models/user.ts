@@ -40,13 +40,13 @@ const UserSchema = new mongoose.Schema<IUser>({
    },
 });
 
-UserSchema.methods.setPassword = function (pw: string) {
+UserSchema.methods.setPassword = function (password: string) {
    this.salt = getSalt();
-   this.passwordHash = hashPassword(pw, this.salt);
+   this.passwordHash = hashPassword(password, this.salt);
 };
 
-UserSchema.methods.verifyUser = function (pw: string) {
-   const hash = hashPassword(pw, this.salt);
+UserSchema.methods.verifyUser = function (password: string) {
+   const hash = hashPassword(password, this.salt);
    return this.passwordHash === hash;
 };
 

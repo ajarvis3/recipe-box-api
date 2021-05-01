@@ -41,12 +41,12 @@ const UserSchema = new mongoose_1.default.Schema({
         required: true,
     },
 });
-UserSchema.methods.setPassword = function (pw) {
+UserSchema.methods.setPassword = function (password) {
     this.salt = salting_1.default();
-    this.passwordHash = hashing_1.default(pw, this.salt);
+    this.passwordHash = hashing_1.default(password, this.salt);
 };
-UserSchema.methods.verifyUser = function (pw) {
-    const hash = hashing_1.default(pw, this.salt);
+UserSchema.methods.verifyUser = function (password) {
+    const hash = hashing_1.default(password, this.salt);
     return this.passwordHash === hash;
 };
 const User = mongoose_1.default.model("User", UserSchema);

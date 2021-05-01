@@ -23,26 +23,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const connect_1 = __importDefault(require("../../utils/db/connect"));
+const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerator"));
 const tokenchecker_1 = __importDefault(require("../../utils/auth/tokenchecker"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const UserData_1 = __importDefault(require("../../utils/db/User/UserData"));
 const router = express.Router();
-/* POST signin data */
+/* POST verify data */
 router.post("/", tokenchecker_1.default, (req, res, next) => {
-    connect_1.default();
     const failed = () => res.status(401).send();
-    const tok = jsonwebtoken_1.default.decode(req.token);
-    console.log(tok);
+    const decodedToken = jsonwebtoken_1.default.decode(req.token);
     jsonwebtoken_1.default.verify(req.token, process.env.secret, (err, authorizedData) => {
         if (err) {
-            console.log("sad andrew");
-            res.sendStatus(403);
+            failed();
         }
         else {
-            // If token is successfully verified, we can send the autorized data
-            res.json({
-                message: "Successful log in",
-                authorizedData,
+            UserData_1.default.findUserByUuid(decodedToken.id).then((user) => {
+                const token = tokengenerator_1.default(user);
+                res.status(200).send({ auth: true, token });
             });
         }
     });

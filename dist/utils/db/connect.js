@@ -4,12 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = __importDefault(require("dotenv"));
 // VS Code reported that process was treated
 // as a local variable
 // so I'm just passing in the process now
 function startMongo(process) {
-    dotenv_1.default.config();
     const env = process.env.NODE_ENV || "development";
     let connString = "mongodb://" +
         process.env.DB_HOST +
