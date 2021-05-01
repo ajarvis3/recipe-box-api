@@ -28,8 +28,13 @@ const path = __importStar(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const index_1 = __importDefault(require("./routes/index"));
+const cors_1 = __importDefault(require("cors"));
 const app = express_1.default();
 const port = process.env.PORT || 8080; // default port to listen
+if (process.env.NODE_ENV !== "production") {
+    app.use(cors_1.default());
+    app.options("*", cors_1.default());
+}
 const consolidate_1 = __importDefault(require("consolidate"));
 const connect_1 = __importDefault(require("./utils/db/connect"));
 app.set("view engine", "html");
