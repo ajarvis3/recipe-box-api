@@ -33,6 +33,7 @@ router.use("/users", users_1.default);
 router.use("/content", index_1.default);
 /* GET home page. */
 router.get(["/", "**"], (req, res, next) => {
+    console.log("jere???");
     const pth = path.join(__dirname, "../../public", "index.html");
     res.sendFile(pth);
 });

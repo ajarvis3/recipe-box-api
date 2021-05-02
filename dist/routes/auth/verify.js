@@ -27,12 +27,18 @@ const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerato
 const tokenchecker_1 = __importDefault(require("../../utils/auth/tokenchecker"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const UserData_1 = __importDefault(require("../../utils/db/User/UserData"));
+const Error_1 = __importDefault(require("../../types/Error"));
 const router = express.Router();
 /* POST verify data */
 router.post("/", tokenchecker_1.default, (req, res, next) => {
-    const failed = () => res.status(401).send();
+    const failed = () => {
+        const err = new Error_1.default(401, "Unauthorized");
+        next(err);
+    };
+    if (!req.token)
+        failed();
     const decodedToken = jsonwebtoken_1.default.decode(req.token);
-    jsonwebtoken_1.default.verify(req.token, process.env.secret, (err, authorizedData) => {
+    jsonwebtoken_1.default.verify(req.token, process.env.secret, (err) => {
         if (err) {
             failed();
         }

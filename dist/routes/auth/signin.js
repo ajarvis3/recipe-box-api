@@ -25,13 +25,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const UserData_1 = __importDefault(require("../../utils/db/User/UserData"));
 const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerator"));
+const Error_1 = __importDefault(require("../../types/Error"));
 const router = express.Router();
 /* POST signin data */
 router.post("/", (req, res, next) => {
+    const failed = () => {
+        const err = new Error_1.default(401, "Unauthorized");
+        next(err);
+    };
     if (!req.body.password || !req.body.email) {
-        res.status(400).send();
+        failed();
     }
-    const failed = () => res.status(401).send();
     UserData_1.default.findUserByEmail(req.body.email).then((user) => {
         if (user.verifyUser(req.body.password)) {
             const token = tokengenerator_1.default(user);

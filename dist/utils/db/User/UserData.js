@@ -10,12 +10,12 @@ const auth_2 = require("../../auth");
 class UserData {
     constructor() {
         this.createUser = (email, password, firstName, lastName) => {
-            const uuid = uuid_1.v4();
+            const _id = uuid_1.v4();
             const timeCreated = Date.now();
             const salt = auth_1.getSalt();
             const hash = auth_2.hashPassword(password, salt);
             return new user_1.default({
-                uuid,
+                _id,
                 firstName,
                 lastName,
                 email,
@@ -34,7 +34,7 @@ class UserData {
             return user_1.default.findOne({ email });
         };
         this.findUserByUuid = (id) => {
-            return user_1.default.findOne({ uuid: id });
+            return user_1.default.findOne({ _id: id });
         };
     }
 }

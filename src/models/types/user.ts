@@ -1,7 +1,7 @@
-import mongoose, { Query } from "mongoose";
+import mongoose from "mongoose";
 
 interface IUser extends mongoose.Document {
-   uuid: string;
+   _id: string;
    firstName: string;
    lastName: string;
    email: string;

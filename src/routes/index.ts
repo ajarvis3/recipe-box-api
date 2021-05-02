@@ -12,6 +12,7 @@ router.use("/content", contentRouter);
 
 /* GET home page. */
 router.get(["/", "**"], (req, res, next) => {
+   console.log("jere???");
    const pth = path.join(__dirname, "../../public", "index.html");
    res.sendFile(pth);
 });

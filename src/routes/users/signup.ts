@@ -2,14 +2,21 @@ import * as express from "express";
 import getToken from "../../utils/auth/tokengenerator";
 import UserData from "../../utils/db/User/UserData";
 import IUser from "../../models/types/user";
+import MyError from "../../types/Error";
 
 const router = express.Router();
 
 /* POST signup data */
 router.post("/", (req, res, next) => {
    const body = req.body;
-   if (!body.password) {
-      res.status(401).send();
+
+   const failed = () => {
+      const err = new MyError(401, "Unauthorized");
+      next(err);
+   };
+
+   if (!body.password || !body.firstName || !body.lastName || !body.email) {
+      failed();
       return;
    }
 
@@ -22,6 +29,8 @@ router.post("/", (req, res, next) => {
       if (user) {
          const token = getToken(user);
          res.status(200).send({ auth: true, token });
+      } else {
+         failed();
       }
    });
 });

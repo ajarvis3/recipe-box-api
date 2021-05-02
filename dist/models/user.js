@@ -10,7 +10,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const salting_1 = __importDefault(require("../utils/auth/salting"));
 const hashing_1 = __importDefault(require("../utils/auth/hashing"));
 const UserSchema = new mongoose_1.default.Schema({
-    uuid: {
+    _id: {
         type: String,
         required: true,
         unique: true,
@@ -40,7 +40,7 @@ const UserSchema = new mongoose_1.default.Schema({
         type: Number,
         required: true,
     },
-});
+}, { _id: false });
 UserSchema.methods.setPassword = function (password) {
     this.salt = salting_1.default();
     this.passwordHash = hashing_1.default(password, this.salt);

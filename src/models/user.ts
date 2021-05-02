@@ -7,38 +7,41 @@ import getSalt from "../utils/auth/salting";
 import hashPassword from "../utils/auth/hashing";
 import IUser from "./types/user";
 
-const UserSchema = new mongoose.Schema<IUser>({
-   uuid: {
-      type: String,
-      required: true,
-      unique: true,
+const UserSchema = new mongoose.Schema<IUser>(
+   {
+      _id: {
+         type: String,
+         required: true,
+         unique: true,
+      },
+      firstName: {
+         type: String,
+         required: true,
+      },
+      lastName: {
+         type: String,
+         required: true,
+      },
+      email: {
+         type: String,
+         required: true,
+         unique: true,
+      },
+      passwordHash: {
+         type: String,
+         required: true,
+      },
+      salt: {
+         type: String,
+         required: true,
+      },
+      timeCreated: {
+         type: Number,
+         required: true,
+      },
    },
-   firstName: {
-      type: String,
-      required: true,
-   },
-   lastName: {
-      type: String,
-      required: true,
-   },
-   email: {
-      type: String,
-      required: true,
-      unique: true,
-   },
-   passwordHash: {
-      type: String,
-      required: true,
-   },
-   salt: {
-      type: String,
-      required: true,
-   },
-   timeCreated: {
-      type: Number,
-      required: true,
-   },
-});
+   { _id: false }
+);
 
 UserSchema.methods.setPassword = function (password: string) {
    this.salt = getSalt();

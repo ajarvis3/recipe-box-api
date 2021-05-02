@@ -12,12 +12,13 @@ const app = express();
 const port = process.env.PORT || 8080; // default port to listen
 
 if (process.env.NODE_ENV !== "production") {
-  app.use(cors());
-  app.options("*", cors());
+   app.use(cors());
+   app.options("*", cors());
 }
 
 import engine from "consolidate";
 import startDb from "./utils/db/connect";
+import MyError from "./types/Error";
 
 app.set("view engine", "html");
 app.engine("html", engine.mustache);
@@ -41,14 +42,18 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err: any, req: any, res: any, next: any) => {
+app.use((err: Error, req: any, res: any, next: any) => {
    // set locals, only providing error in development
-   res.locals.message = err.message;
-   res.locals.error = req.app.get("env") === "development" ? err : {};
+   if (err instanceof MyError) {
+      res.status(err.status).send("{}");
+   } else {
+      res.locals.message = err.message;
+      res.locals.error = req.app.get("env") === "development" ? err : {};
 
-   // render the error page
-   res.status(err.status || 500);
-   res.send("error");
+      // render the error page
+      res.status(500);
+      res.send("error");
+   }
 });
 
 // start the Express server

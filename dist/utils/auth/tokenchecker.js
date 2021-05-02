@@ -5,7 +5,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // Check to make sure header is not undefined, if so, return Forbidden (403)
 const checkToken = (req, res, next) => {
-    const header = req.headers.authorization;
+    const header = req.headers.authentication;
     if (typeof header !== "undefined") {
         const bearer = header.split(" ");
         const token = bearer[1];

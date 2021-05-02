@@ -37,6 +37,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 const consolidate_1 = __importDefault(require("consolidate"));
 const connect_1 = __importDefault(require("./utils/db/connect"));
+const Error_1 = __importDefault(require("./types/Error"));
 app.set("view engine", "html");
 app.engine("html", consolidate_1.default.mustache);
 app.use(express_1.default.json());
@@ -55,11 +56,16 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
     // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-    // render the error page
-    res.status(err.status || 500);
-    res.send("error");
+    if (err instanceof Error_1.default) {
+        res.status(err.status).send("{}");
+    }
+    else {
+        res.locals.message = err.message;
+        res.locals.error = req.app.get("env") === "development" ? err : {};
+        // render the error page
+        res.status(500);
+        res.send("error");
+    }
 });
 // start the Express server
 app.listen(port, () => {

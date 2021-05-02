@@ -11,13 +11,13 @@ class UserData {
       firstName: string,
       lastName: string
    ) => {
-      const uuid = uuidv4();
+      const _id = uuidv4();
       const timeCreated = Date.now();
       const salt = getSalt();
       const hash = hashPassword(password, salt);
 
       return new User({
-         uuid,
+         _id,
          firstName,
          lastName,
          email,
@@ -47,7 +47,7 @@ class UserData {
    };
 
    findUserByUuid = (id: string) => {
-      return User.findOne({ uuid: id });
+      return User.findOne({ _id: id });
    };
 }
 

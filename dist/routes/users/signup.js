@@ -25,18 +25,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const tokengenerator_1 = __importDefault(require("../../utils/auth/tokengenerator"));
 const UserData_1 = __importDefault(require("../../utils/db/User/UserData"));
+const Error_1 = __importDefault(require("../../types/Error"));
 const router = express.Router();
 /* POST signup data */
 router.post("/", (req, res, next) => {
     const body = req.body;
-    if (!body.password) {
-        res.status(401).send();
+    const failed = () => {
+        const err = new Error_1.default(401, "Unauthorized");
+        next(err);
+    };
+    if (!body.password || !body.firstName || !body.lastName || !body.email) {
+        failed();
         return;
     }
     UserData_1.default.createAndSaveUser(req.body.email, req.body.password, req.body.firstName, req.body.lastName).then((user) => {
         if (user) {
             const token = tokengenerator_1.default(user);
             res.status(200).send({ auth: true, token });
+        }
+        else {
+            failed();
         }
     });
 });
