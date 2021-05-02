@@ -2,7 +2,7 @@ import * as express from "express";
 import { JSDOM } from "jsdom";
 import MyError from "../../types/Error";
 import checkToken from "../../utils/auth/tokenchecker";
-import fetchMetaData from "../../utils/db/metadata/fetchmetadata";
+import fetchMetaData from "../../utils/metadata/fetchmetadata";
 
 const router = express.Router();
 
