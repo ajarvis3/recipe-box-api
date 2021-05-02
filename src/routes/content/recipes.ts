@@ -1,4 +1,6 @@
 import * as express from "express";
+import { JSDOM } from "jsdom";
+import MyError from "../../types/Error";
 import checkToken from "../../utils/auth/tokenchecker";
 import fetchMetaData from "../../utils/db/metadata/fetchmetadata";
 
@@ -7,10 +9,13 @@ const router = express.Router();
 /* POST Recipe Data */
 router.post("/", checkToken, (req, res, next) => {
    const url = req.body.url;
-   fetchMetaData(url).then((data: string | undefined) => {
+   fetchMetaData(url).then((data: JSDOM | undefined) => {
       if (data) {
          res.setHeader("Content-Type", "text/plain");
          res.send(data);
+      } else {
+         const err = new MyError(401, "Unauthorized");
+         next(err);
       }
    });
 });

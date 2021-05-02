@@ -23,6 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
+const Error_1 = __importDefault(require("../../types/Error"));
 const tokenchecker_1 = __importDefault(require("../../utils/auth/tokenchecker"));
 const fetchmetadata_1 = __importDefault(require("../../utils/db/metadata/fetchmetadata"));
 const router = express.Router();
@@ -33,6 +34,10 @@ router.post("/", tokenchecker_1.default, (req, res, next) => {
         if (data) {
             res.setHeader("Content-Type", "text/plain");
             res.send(data);
+        }
+        else {
+            const err = new Error_1.default(401, "Unauthorized");
+            next(err);
         }
     });
 });
