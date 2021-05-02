@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const Error_1 = __importDefault(require("../../types/Error"));
 const tokenchecker_1 = __importDefault(require("../../utils/auth/tokenchecker"));
-const fetchmetadata_1 = __importDefault(require("../../utils/db/metadata/fetchmetadata"));
+const fetchmetadata_1 = __importDefault(require("../../utils/metadata/fetchmetadata"));
 const router = express.Router();
 /* POST Recipe Data */
 router.post("/", tokenchecker_1.default, (req, res, next) => {

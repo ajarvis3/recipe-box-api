@@ -1,7 +1,20 @@
 import { JSDOM } from "jsdom";
 import fetch from "node-fetch";
+import IMetadata from "./types/metadata";
+import MetaDataBuilder from "./types/metadatabuilder";
+
+// maybe add image width and height too
+
 
 const fetchMetaData = (url: string) => {
+   const search = [
+     "og:title",
+     "og:site_name",
+     "og:url",
+     "og:description",
+     "og:image",
+   ];
+
    // switch this to env at some point
    return fetch(url)
       .then(
@@ -14,11 +27,20 @@ const fetchMetaData = (url: string) => {
       )
       .then((html) => {
          if (html) {
+            const builder = new MetaDataBuilder();
+
+
             const dom = new JSDOM(html);
             const document = dom.window.document;
             document.querySelectorAll("meta").forEach((element) => {
-               console.log(element.getAttribute("property"));
+               const index = search.indexOf(element.getAttribute("property"));
+               if (index !== -1) {
+                 const propertyName = element.getAttribute("property");
+                 const value = element.getAttribute("content");
+                 builder.setProperty(propertyName, value);
+               }
             });
+            console.log(builder.build());
             return dom;
          }
       });

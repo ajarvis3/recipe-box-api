@@ -27,7 +27,7 @@ const RecipeSchema = new mongoose_1.default.Schema({
     description: {
         type: String,
     },
-    image_url: {
+    imageUrl: {
         type: String,
     },
     url: {
