@@ -28,7 +28,7 @@ router.post("/", (req, res, next) => {
    ).then((user: IUser) => {
       if (user) {
          const token = getToken(user);
-         res.status(200).send({ auth: true, token });
+         res.status(200).send({ auth: true, id: user._id, token });
       } else {
          failed();
       }

@@ -10,6 +10,7 @@ interface IUser extends mongoose.Document {
    timeCreated: number;
    setPassword: (password: string) => void;
    verifyUser: (password: string) => boolean;
+   __v: number;
 }
 
 export default IUser;

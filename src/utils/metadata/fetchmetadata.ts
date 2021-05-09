@@ -5,7 +5,7 @@ import MetaDataBuilder from "./types/metadatabuilder";
 
 // maybe add image width and height too
 
-const fetchMetaData = (url: string) => {
+const fetchMetaData = async (url: string) => {
    const search = [
       "og:title",
       "og:site_name",
@@ -17,12 +17,8 @@ const fetchMetaData = (url: string) => {
    // switch this to env at some point
    return fetch(url)
       .then(
-         (value) => {
-            return value.text();
-         },
-         (err) => {
-            console.error(err);
-         }
+         (value) => value.text(),
+         (err) => null
       )
       .then((html) => {
          if (html) {
@@ -40,9 +36,9 @@ const fetchMetaData = (url: string) => {
                   builder.setProperty(propertyName, value);
                }
             });
-            console.log(builder.build());
-            return dom;
+            return builder.build();
          }
+         return null;
       });
 };
 

@@ -19,7 +19,7 @@ router.post("/", (req, res, next) => {
    UserData.findUserByEmail(req.body.email).then((user) => {
       if (user.verifyUser(req.body.password)) {
          const token = getToken(user);
-         res.status(200).send({ auth: true, token });
+         res.status(200).send({ auth: true, id: user._id, token });
       } else {
          failed();
       }

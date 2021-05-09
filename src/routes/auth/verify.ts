@@ -26,7 +26,7 @@ router.post("/", checkToken, (req: IAuthRequest, res, next) => {
       } else {
          UserData.findUserByUuid(decodedToken.id).then((user: IUser) => {
             const token = getToken(user);
-            res.status(200).send({ auth: true, token });
+            res.status(200).send({ auth: true, id: decodedToken.id, token });
          });
       }
    });

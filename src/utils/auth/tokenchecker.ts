@@ -16,8 +16,7 @@ const checkToken = (req: IAuthRequest, res: Response, next: NextFunction) => {
       req.token = token;
       next();
    } else {
-      // If header is undefined return Forbidden (403)
-      res.sendStatus(403);
+      res.sendStatus(401);
    }
 };
 
