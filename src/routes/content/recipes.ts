@@ -46,14 +46,11 @@ router.get("/", checkRecipe, (req, res, next) => {
    if (req.query.id) {
       const id = req.query.id as string;
       RecipeData.findRecipeById(id).then((recipe) => {
-         console.log(recipe);
          res.status(200).send(JSON.stringify(recipe));
       });
    } else if (req.query.uid) {
       const id = req.query.uid as string;
-      console.log(id);
       RecipeData.findRecipesByUserId(id).then((recipes) => {
-         console.log(recipes);
          res.status(200).send(JSON.stringify(recipes));
       });
    }
