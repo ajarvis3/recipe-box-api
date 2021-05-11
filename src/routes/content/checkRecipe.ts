@@ -12,15 +12,22 @@ const checkRecipe = (req: IAuthRequest, res: any, next: NextFunction) => {
          ? (req.body.recipe as IRecipe).id
          : undefined;
    checkToken(req, res, () => {
-      if (!recipeId) next();
-      const decodedToken = jwt.decode(req.token) as IUserToken;
-      RecipeData.findRecipeById(recipeId).then((recipe) => {
-         if (decodedToken.id !== recipe.userUuid) {
-            res.status(401).send("Incorrect Credentials");
-         } else {
-            next();
-         }
-      });
+      if (!recipeId) {
+         next();
+      } else {
+         const decodedToken = jwt.decode(req.token) as IUserToken;
+         RecipeData.findRecipeById(recipeId).then((recipe) => {
+            if (recipe) {
+               if (decodedToken.id !== recipe.userUuid) {
+                  res.status(401).send("Incorrect Credentials");
+               } else {
+                  next();
+               }
+            } else {
+               res.status(400).send("Bad Request");
+            }
+         });
+      }
    });
 };
 

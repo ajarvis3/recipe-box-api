@@ -50,9 +50,14 @@ router.get("/", checkRecipe, (req, res, next) => {
       });
    } else if (req.query.uid) {
       const id = req.query.uid as string;
-      RecipeData.findRecipesByUserId(id).then((recipes) => {
-         res.status(200).send(JSON.stringify(recipes));
-      });
+      RecipeData.findRecipesByUserId(id)
+         .then((recipes) => {
+            res.status(200).send(JSON.stringify(recipes));
+         })
+         .catch((err) => {
+            // respond with error
+            // some status, send
+         });
    }
 });
 
