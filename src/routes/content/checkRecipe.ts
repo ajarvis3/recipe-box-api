@@ -7,17 +7,10 @@ import IRecipe from "../../models/types/recipe";
 import RecipeData from "../../utils/db/Recipes/RecipeData";
 
 const checkRecipe = (req: IAuthRequest, res: any, next: NextFunction) => {
-   console.log("check recipe");
-   console.log(req.query.id);
-   // let recipeId = "";
-   // if (!req.body) {
-   //    recipeId = req.query.id as string;
-   // }
    const recipeId =
       (req.query.id as string) || req.body?.recipe
          ? (req.body?.recipe as IRecipe)?.id
          : undefined;
-   console.log(req.query, recipeId);
    checkToken(req, res, () => {
       if (!recipeId) {
          next();
