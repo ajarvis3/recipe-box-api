@@ -7,6 +7,7 @@ import IAuthRequest from "./types/authrequest";
 
 // Check to make sure header is not undefined, if so, return Forbidden (403)
 const checkToken = (req: IAuthRequest, res: Response, next: NextFunction) => {
+   console.log("token checker");
    const header = req.headers.authentication as string;
 
    if (typeof header !== "undefined") {

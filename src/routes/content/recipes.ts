@@ -64,6 +64,7 @@ router.get("/", checkRecipe, (req, res, next) => {
 /* DELETE /content/recipes?id=<uuid> */
 router.delete("/", checkRecipe, (req, res, next) => {
    const id = req.query.id as string;
+   console.log("here");
    RecipeData.deleteRecipeById(id).then((recipe) => {
       res.status(200).send(JSON.stringify(recipe));
    });
