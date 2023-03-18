@@ -2,7 +2,7 @@ interface IOAuthUserToken {
    iss: string;
    nbf: number;
    aud: string;
-   sub: number;
+   sub: string;
    email: string;
    azp: string;
    name: string;
