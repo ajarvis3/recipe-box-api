@@ -27,7 +27,11 @@ router.post("/", (req, res, next) => {
          user
             .verifyUser(req.body.credential)
             .then((loginTicket) => {
-               res.status(200).send({ auth: true, id: user._id });
+               res.status(200).send({
+                  auth: true,
+                  id: user._id,
+                  token: req.body.credential,
+               });
             })
             .catch((e) => {
                failed();

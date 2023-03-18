@@ -7,7 +7,7 @@ interface IOAuthUser extends mongoose.Document {
    name: string;
    email: string;
    timeCreated: number;
-   verifyUser: (token: IOAuthUserToken) => Promise<LoginTicket>;
+   verifyUser: (token: string) => Promise<LoginTicket>;
    __v: number;
 }
 
