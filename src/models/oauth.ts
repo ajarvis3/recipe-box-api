@@ -5,7 +5,7 @@
 import mongoose from "mongoose";
 import IOAuthUser from "./types/oauth.js";
 
-const UserSchema = new mongoose.Schema<IOAuthUser>(
+const OAuthUserSchema = new mongoose.Schema<IOAuthUser>(
    {
       _id: {
          type: String,
@@ -27,5 +27,8 @@ const UserSchema = new mongoose.Schema<IOAuthUser>(
    { _id: false }
 );
 
-const OAuthUser: mongoose.Model<IOAuthUser> = mongoose.model("User", UserSchema);
+const OAuthUser: mongoose.Model<IOAuthUser> = mongoose.model(
+   "OAuthUser",
+   OAuthUserSchema
+);
 export default OAuthUser;

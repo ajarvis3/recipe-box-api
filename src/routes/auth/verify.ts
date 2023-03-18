@@ -17,9 +17,12 @@ router.post("/", checkToken, (req: IAuthRequest, res, next) => {
       next(err);
    };
 
+   console.log(req);
+   console.log(req.token);
    if (!req.token) failed();
 
    const decodedToken = jwt.decode(req.token) as IUserToken;
+   console.log(decodedToken);
    jwt.verify(req.token, process.env.secret, (err) => {
       if (err) {
          failed();
