@@ -1,12 +1,12 @@
 import * as express from "express";
-import getToken from "../../utils/auth/tokengenerator";
-import checkToken from "../../utils/auth/tokenchecker";
+import getToken from "../../utils/auth/tokengenerator.js";
+import checkToken from "../../utils/auth/tokenchecker.js";
 import jwt from "jsonwebtoken";
-import IAuthRequest from "../../utils/auth/types/authrequest";
-import IUser from "../../models/types/user";
-import IUserToken from "../../utils/auth/types/usertoken";
-import UserData from "../../utils/db/User/UserData";
-import MyError from "../../types/Error";
+import IAuthRequest from "../../utils/auth/types/authrequest.js";
+import IUser from "../../models/types/user.js";
+import IUserToken from "../../utils/auth/types/usertoken.js";
+import UserData from "../../utils/db/User/UserData.js";
+import MyError from "../../types/Error.js";
 
 const router = express.Router();
 

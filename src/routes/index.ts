@@ -1,8 +1,8 @@
 import * as express from "express";
 import * as path from "path";
-import authRouter from "./auth";
-import contentRouter from "./content/index"; // this one doesn't work without index for some reason
-import usersRouter from "./users";
+import authRouter from "./auth/index.js";
+import contentRouter from "./content/index.js"; // this one doesn't work without index for some reason
+import usersRouter from "./users/index.js";
 
 const router = express.Router();
 

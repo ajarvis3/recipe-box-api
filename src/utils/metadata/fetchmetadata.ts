@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 import fetch from "node-fetch";
-import IMetadata from "./types/metadata";
-import MetaDataBuilder from "./types/metadatabuilder";
+import IMetadata from "./types/metadata.js";
+import MetaDataBuilder from "./types/metadatabuilder.js";
 
 // maybe add image width and height too
 
@@ -17,10 +17,10 @@ const fetchMetaData = async (url: string) => {
    // switch this to env at some point
    return fetch(url)
       .then(
-         (value) => value.text(),
-         (err) => null
+         (value: any) => value.text(),
+         (err: any): any => null
       )
-      .then((html) => {
+      .then((html: any) => {
          if (html) {
             const builder = new MetaDataBuilder();
 

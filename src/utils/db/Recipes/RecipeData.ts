@@ -1,7 +1,7 @@
-import IRecipe from "../../../models/types/recipe";
-import Recipe from "../../../models/recipe";
+import IRecipe from "../../../models/types/recipe.js";
+import Recipe from "../../../models/recipe.js";
 import { v4 as uuidv4 } from "uuid";
-import IMetadata from "../../../utils/metadata/types/metadata";
+import IMetadata from "../../../utils/metadata/types/metadata.js";
 
 class RecipeData {
    createRecipe = (metadata: IMetadata, userUuid: string) => {

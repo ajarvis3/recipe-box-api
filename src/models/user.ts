@@ -3,16 +3,14 @@
  */
 
 import mongoose from "mongoose";
-import getSalt from "../utils/auth/salting";
-import hashPassword from "../utils/auth/hashing";
-import IUser from "./types/user";
+import getSalt from "../utils/auth/salting.js";
+import hashPassword from "../utils/auth/hashing.js";
+import IUser from "./types/user.js";
 
 const UserSchema = new mongoose.Schema<IUser>(
    {
       _id: {
          type: String,
-         required: true,
-         unique: true,
       },
       firstName: {
          type: String,
@@ -53,5 +51,5 @@ UserSchema.methods.verifyUser = function (password: string) {
    return this.passwordHash === hash;
 };
 
-const User: mongoose.Model<IUser> = mongoose.model("User", UserSchema);
+const User: mongoose.Model<IUser, {}> = mongoose.model("User", UserSchema);
 export default User;

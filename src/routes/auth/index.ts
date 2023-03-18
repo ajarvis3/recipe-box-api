@@ -1,5 +1,5 @@
-import signinRouter from "./signin";
-import verifyRouter from "./verify";
+import signinRouter from "./signin.js";
+import verifyRouter from "./verify.js";
 import * as express from "express";
 
 const router = express.Router();

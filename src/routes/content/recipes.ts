@@ -1,14 +1,16 @@
 import * as express from "express";
-import IMetadata from "../../utils/metadata/types/metadata";
-import MyError from "../../types/Error";
-import checkToken from "../../utils/auth/tokenchecker";
-import fetchMetaData from "../../utils/metadata/fetchmetadata";
-import RecipeData from "../../utils/db/Recipes/RecipeData";
-import checkRecipe from "./checkRecipe";
-import IRecipe from "../../models/types/recipe";
+import IMetadata from "../../utils/metadata/types/metadata.js";
+import MyError from "../../types/Error.js";
+import checkToken from "../../utils/auth/tokenchecker.js";
+import fetchMetaData from "../../utils/metadata/fetchmetadata.js";
+import RecipeData from "../../utils/db/Recipes/RecipeData.js";
+import checkRecipe from "./checkRecipe.js";
+import IRecipe from "../../models/types/recipe.js";
 import jwt from "jsonwebtoken";
-import IAuthRequest from "../../utils/auth/types/authrequest";
-import IUserToken from "../../utils/auth/types/usertoken";
+import IAuthRequest from "../../utils/auth/types/authrequest.js";
+import IUserToken from "../../utils/auth/types/usertoken.js";
+import Recipe from "../../models/recipe.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -45,16 +47,16 @@ router.patch("/", checkRecipe, (req, res, next) => {
 router.get("/", checkRecipe, (req, res, next) => {
    if (req.query.id) {
       const id = req.query.id as string;
-      RecipeData.findRecipeById(id).then((recipe) => {
+      RecipeData.findRecipeById(id).then((recipe: IRecipe) => {
          res.status(200).send(JSON.stringify(recipe));
       });
    } else if (req.query.uid) {
       const id = req.query.uid as string;
       RecipeData.findRecipesByUserId(id)
-         .then((recipes) => {
+         .then((recipes: any) => {
             res.status(200).send(JSON.stringify(recipes));
          })
-         .catch((err) => {
+         .catch((err: any) => {
             // respond with error
             // some status, send
          });
@@ -64,7 +66,7 @@ router.get("/", checkRecipe, (req, res, next) => {
 /* DELETE /content/recipes?id=<uuid> */
 router.delete("/", checkRecipe, (req, res, next) => {
    const id = req.query.id as string;
-   RecipeData.deleteRecipeById(id).then((recipe) => {
+   RecipeData.deleteRecipeById(id).then((recipe: IRecipe) => {
       res.status(200).send(JSON.stringify(recipe));
    });
 });

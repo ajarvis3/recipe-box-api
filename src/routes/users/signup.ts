@@ -1,8 +1,8 @@
 import * as express from "express";
-import getToken from "../../utils/auth/tokengenerator";
-import UserData from "../../utils/db/User/UserData";
-import IUser from "../../models/types/user";
-import MyError from "../../types/Error";
+import getToken from "../../utils/auth/tokengenerator.js";
+import UserData from "../../utils/db/User/UserData.js";
+import IUser from "../../models/types/user.js";
+import MyError from "../../types/Error.js";
 
 const router = express.Router();
 

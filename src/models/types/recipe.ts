@@ -8,6 +8,7 @@ interface IRecipe extends mongoose.Document {
    description: string;
    imageUrl: string;
    url: string;
+   timeCreated: number;
    tags: string[];
    comments: string[];
    userUuid: string;

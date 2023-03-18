@@ -1,8 +1,8 @@
-import IUser from "../../../models/types/user";
-import User from "../../../models/user";
+import IUser from "../../../models/types/user.js";
+import User from "../../../models/user.js";
 import { v4 as uuidv4 } from "uuid";
-import { getSalt } from "../../auth";
-import { hashPassword } from "../../auth";
+import { getSalt } from "../../auth/index.js";
+import { hashPassword } from "../../auth/index.js";
 
 class UserData {
    createUser = (

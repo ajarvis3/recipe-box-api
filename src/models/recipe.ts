@@ -3,14 +3,12 @@
  */
 
 import mongoose from "mongoose";
-import IRecipe from "./types/recipe";
+import IRecipe from "./types/recipe.js";
 
 const RecipeSchema = new mongoose.Schema<IRecipe>(
    {
       _id: {
          type: String,
-         required: true,
-         unique: true,
       },
       source: {
          type: String,

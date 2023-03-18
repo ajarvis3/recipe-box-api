@@ -1,7 +1,8 @@
 import * as express from "express";
-import UserData from "../../utils/db/User/UserData";
-import getToken from "../../utils/auth/tokengenerator";
-import MyError from "../../types/Error";
+import UserData from "../../utils/db/User/UserData.js";
+import getToken from "../../utils/auth/tokengenerator.js";
+import MyError from "../../types/Error.js";
+import IUser from "../../models/types/user.js";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post("/", (req, res, next) => {
       failed();
    }
 
-   UserData.findUserByEmail(req.body.email).then((user) => {
+   UserData.findUserByEmail(req.body.email).then((user: IUser) => {
       if (user && user.verifyUser(req.body.password)) {
          const token = getToken(user);
          res.status(200).send({ auth: true, id: user._id, token });

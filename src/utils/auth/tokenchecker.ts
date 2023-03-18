@@ -3,7 +3,7 @@
  */
 
 import { NextFunction, Response } from "express";
-import IAuthRequest from "./types/authrequest";
+import IAuthRequest from "./types/authrequest.js";
 
 // Check to make sure header is not undefined, if so, return Forbidden (403)
 const checkToken = (req: IAuthRequest, res: Response, next: NextFunction) => {

@@ -14,8 +14,8 @@ function startMongo(process: NodeJS.Process) {
       "/" +
       process.env.DBNAME;
    let options: mongoose.ConnectOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // useNewUrlParser: true,
+      // useUnifiedTopology: true,
    };
    if (env === "production") {
       options = {
