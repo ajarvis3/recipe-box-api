@@ -9,8 +9,6 @@ const RecipeSchema = new mongoose.Schema<IRecipe>(
    {
       _id: {
          type: String,
-         required: true,
-         unique: true,
       },
       source: {
          type: String,

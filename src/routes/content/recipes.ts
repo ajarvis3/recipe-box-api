@@ -8,7 +8,7 @@ import checkRecipe from "./checkRecipe";
 import IRecipe from "../../models/types/recipe";
 import jwt from "jsonwebtoken";
 import IAuthRequest from "../../utils/auth/types/authrequest";
-import IUserToken from "../../utils/auth/types/usertoken";
+import ApplicationToken from "../../utils/auth/types/ApplicationToken";
 
 const router = express.Router();
 
@@ -17,8 +17,10 @@ router.post("/", checkToken, (req: IAuthRequest, res, next) => {
    const url = req.body.url;
    fetchMetaData(url).then((data: IMetadata | null) => {
       if (data) {
-         const decodedToken = jwt.decode(req.token) as IUserToken;
-         RecipeData.createAndSaveRecipe(data, decodedToken.id).then(
+         const decodedToken = jwt.decode(req.token) as ApplicationToken;
+         const userId =
+            "id" in decodedToken ? decodedToken.id : decodedToken.sub;
+         RecipeData.createAndSaveRecipe(data, userId).then(
             (recipe: IRecipe) => {
                res.setHeader("Content-Type", "application/json");
                res.send(JSON.stringify(recipe));
