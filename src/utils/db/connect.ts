@@ -13,10 +13,7 @@ function startMongo(process: NodeJS.Process) {
       process.env.DB_PORT +
       "/" +
       process.env.DBNAME;
-   let options: mongoose.ConnectOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-   };
+   let options: mongoose.ConnectOptions = {};
    if (env === "production") {
       options = {
          ...options,
