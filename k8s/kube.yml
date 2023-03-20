@@ -1,0 +1,101 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+   name: recipe-box-namespace
+   labels:
+      env: recipe-box-namespace
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#    name: load-balancer
+#    namespace: recipe-box-namespace
+# spec:
+#    type: LoadBalancer
+#    ports:
+#       - port: 8080
+#         targetPort: 8080
+#    selector:
+#       name: recipe-box-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recipe-service
+  namespace: recipe-box-namespace
+spec:
+  type: NodePort
+  selector:
+    name: recipe-pods
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+   name: recipe-deployment
+   namespace: recipe-box-namespace
+spec:
+   replicas: 2
+   selector:
+      matchLabels:
+         name: recipe-pods
+   template:
+      metadata:
+         namespace: recipe-box-namespace
+         labels:
+            name: recipe-pods
+      spec:
+        containers:
+          - name: recipe-ctr
+            image: ajarvis/recipe-box-api
+            env:
+              - name: DBNAME
+                value: "recipe_box_db"
+              - name: DB_HOST
+                value: "mongo-svc"
+              - name: DB_PORT
+                value: "27017"
+              - name: DB_USER
+                value: "root"
+              - name: DB_PASSWORD
+                value: "password"
+              - name: secret
+                value: "secret"
+              - name: GOOGLE_CLIENT_ID
+                value: "27350617841-urfjr97a7vs60desr6cvp7r65hhitclp.apps.googleusercontent.com"
+            ports:
+              - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-svc
+  namespace: recipe-box-namespace
+spec:
+  selector:
+    app: mongo
+  ports:
+  - protocol: TCP
+    port: 27017
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: recipe-box-namespace
+  name: mongo-pod
+  labels:
+    app: mongo
+spec:
+  containers:
+  - name: mongo
+    image: mongo
+    env:
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: "root"
+    - name: MONGO_INITDB_ROOT_PASSWORD
+      value: "password"
+    ports:
+    - containerPort: 27017

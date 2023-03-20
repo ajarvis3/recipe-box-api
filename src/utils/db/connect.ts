@@ -14,8 +14,7 @@ function startMongo(process: NodeJS.Process) {
       "/" +
       process.env.DBNAME;
    let options: mongoose.ConnectOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      family: 4,
    };
    if (env === "production") {
       options = {
@@ -24,7 +23,21 @@ function startMongo(process: NodeJS.Process) {
          pass: process.env.DB_PASSWORD,
       };
       connString += "?ssl=true&replicaSet=globaldb&retryWrites=false";
+   } else if (process.env.DB_USER && process.env.DB_PASSWORD) {
+      options = {
+         ...options,
+         authSource: "admin",
+         user: process.env.DB_USER,
+         pass: process.env.DB_PASSWORD,
+      };
    }
+   console.log("connection string: " + connString);
+   console.log(
+      "DB_USER=" +
+         process.env.DB_USER +
+         "\tDB_PASSWORD=" +
+         process.env.DB_PASSWORD
+   );
    mongoose
       .connect(connString, options)
       .then(() => console.log("Connection to Mongo successful"))

@@ -11,6 +11,7 @@ interface IRecipe extends mongoose.Document {
    tags: string[];
    comments: string[];
    userUuid: string;
+   timeCreated: number;
    addTag: (tag: string) => void;
    __v: number;
 }

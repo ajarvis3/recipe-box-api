@@ -5,8 +5,10 @@ declare global {
          DBNAME: string;
          DB_HOST: string;
          DB_PORT: string;
-         DBU_USER: string;
+         DB_USER: string;
          DB_PASSWORD: string;
+         GOOGLE_CLIENT_ID: string;
+         secret: string;
       }
    }
 }

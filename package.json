@@ -8,7 +8,8 @@
       "start": "node dist/server.js",
       "predevstart": "yarn clean",
       "devstart": "yarn build & nodemon dist/server.js",
-      "clean": "yarn rimraf ./dist"
+      "clean": "yarn rimraf ./dist",
+      "docker": "docker build -t ajarvis/recipe-box-api --progress=plain -f ./docker/Dockerfile ."
    },
    "dependencies": {
       "consolidate": "^0.16.0",
@@ -20,7 +21,7 @@
       "http-errors": "^1.8.0",
       "jsdom": "^16.5.3",
       "jsonwebtoken": "^8.5.1",
-      "mongoose": "^5.12.5",
+      "mongoose": "^7.0.2",
       "mustache": "^4.2.0",
       "node-fetch": "^2.6.1",
       "rimraf": "^3.0.2",
