@@ -68,6 +68,13 @@ spec:
                 value: "27350617841-urfjr97a7vs60desr6cvp7r65hhitclp.apps.googleusercontent.com"
             ports:
               - containerPort: 8080
+            livenessProbe:
+              httpGet:
+                path: /liveness
+                port: 8080
+              initialDelaySeconds: 3
+              periodSeconds: 3
+
 ---
 apiVersion: v1
 kind: Service

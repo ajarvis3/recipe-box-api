@@ -11,10 +11,20 @@ router.use("/users", usersRouter);
 router.use("/content", contentRouter);
 
 /* GET home page. */
-router.get(["/", "**"], (req, res, next) => {
-   const pth = path.join(__dirname, "../../public", "index.html");
-   res.sendFile(pth);
-});
+router.get(
+   ["/", "**"],
+   (req, res, next) => {
+      if (req.path === "/liveness") {
+         next();
+      } else {
+         const pth = path.join(__dirname, "../../public", "index.html");
+         res.sendFile(pth);
+      }
+   },
+   (req, res) => {
+      res.status(200).send();
+   }
+);
 
 const indexRouter = router;
 export default indexRouter;
