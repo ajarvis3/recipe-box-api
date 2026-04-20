@@ -43,11 +43,11 @@ class UserData {
    };
 
    findUserByEmail = (email: string) => {
-      return User.findOne({ email });
+      return User.findOne({ email }).exec();
    };
 
    findUserByUuid = (id: string) => {
-      return User.findOne({ _id: id });
+      return User.findOne({ _id: id }).exec();
    };
 }
 

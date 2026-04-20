@@ -1,8 +1,16 @@
 import jwt from "jsonwebtoken";
 import IUser from "../../models/types/user";
+import MyError from "../../types/Error";
+import getJwtSecret from "./secret";
 
 const getToken = (user: IUser) => {
-   const token = jwt.sign({ id: user._id }, process.env.secret, {
+   const secret = getJwtSecret();
+
+   if (!secret) {
+      throw new MyError(500, "JWT secret is not configured");
+   }
+
+   const token = jwt.sign({ id: user._id }, secret, {
       expiresIn: 86400, // expires in 24 hours
    });
    return token;

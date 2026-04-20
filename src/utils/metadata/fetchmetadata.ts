@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 import IMetadata from "./types/metadata";
 import MetaDataBuilder from "./types/metadatabuilder";
+import MyError from "../../types/Error";
 
 const OPEN_GRAPH_PROPERTIES = new Set([
    "og:title",
@@ -11,11 +12,29 @@ const OPEN_GRAPH_PROPERTIES = new Set([
 ]);
 
 const fetchMetaData = async (url: string): Promise<IMetadata | null> => {
+   let timedOut = false;
+   let timeout: ReturnType<typeof setTimeout> | undefined;
+
    try {
-      const response = await fetch(url);
+      const parsedUrl = new URL(url);
+
+      if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+         throw new MyError(400, "Unsupported URL protocol");
+      }
+
+      const controller = new AbortController();
+      timeout = setTimeout(() => {
+         timedOut = true;
+         controller.abort();
+      }, 10000);
+
+      const response = await fetch(parsedUrl.toString(), {
+         signal: controller.signal,
+      });
+      clearTimeout(timeout);
 
       if (!response.ok) {
-         return null;
+         throw new MyError(502, `Metadata fetch failed with ${response.status}`);
       }
 
       const html = await response.text();
@@ -36,9 +55,29 @@ const fetchMetaData = async (url: string): Promise<IMetadata | null> => {
          }
       }
 
-      return builder.build();
-   } catch {
-      return null;
+      const metadata = builder.build();
+
+      return metadata.title || metadata.source || metadata.url
+         ? metadata
+         : null;
+   } catch (error) {
+      if (timedOut) {
+         throw new MyError(504, "Metadata fetch timed out");
+      }
+
+      if (error instanceof MyError) {
+         throw error;
+      }
+
+      if (error instanceof TypeError) {
+         throw new MyError(400, "Invalid URL");
+      }
+
+      throw new MyError(502, "Unable to fetch metadata");
+   } finally {
+      if (timeout) {
+         clearTimeout(timeout);
+      }
    }
 };
 

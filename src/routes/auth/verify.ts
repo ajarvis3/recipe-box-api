@@ -9,56 +9,72 @@ import MyError from "../../types/Error";
 import ApplicationToken from "../../utils/auth/types/ApplicationToken";
 import OAuthUserData from "../../utils/db/User/OAuthUserData";
 import IOAuthUser from "../../models/types/oauth";
-import IOAuthUserToken from "../../utils/auth/types/OAuthData";
+import getJwtSecret from "../../utils/auth/secret";
 
 const router = express.Router();
 
 /* POST verify data */
-router.post("/", checkToken, (req: IAuthRequest, res, next) => {
-   const failed = () => {
-      const err = new MyError(401, "Unauthorized");
-      next(err);
-   };
+router.post("/", checkToken, async (req: IAuthRequest, res, next) => {
+   try {
+      if (!req.token) {
+         throw new MyError(401, "Unauthorized");
+      }
 
-   if (!req.token) {
-      return failed();
-   }
+      const decodedToken = jwt.decode(req.token);
 
-   const decodedToken = jwt.decode(req.token);
-   if (!decodedToken || typeof decodedToken === "string") {
-      return failed();
-   }
+      if (!decodedToken || typeof decodedToken === "string") {
+         throw new MyError(401, "Unauthorized");
+      }
 
-   const applicationToken = decodedToken as ApplicationToken;
-   if ("aud" in applicationToken) {
-      OAuthUserData.findUserByUuid(applicationToken.sub).then(
-         (user: IOAuthUser) => {
-            if (user.verifyUser(req.token)) {
-               res.status(200).send({
-                  auth: true,
-                  id: applicationToken.sub,
-                  token: req.token,
-               });
-            } else {
-               failed();
-            }
+      const applicationToken = decodedToken as ApplicationToken;
+
+      if ("aud" in applicationToken) {
+         const user = await OAuthUserData.findUserByUuid(applicationToken.sub);
+
+         if (!user) {
+            throw new MyError(404, "OAuth user not found");
          }
-      );
-   } else {
-      jwt.verify(req.token, process.env.secret, (err) => {
-         if (err) {
-            failed();
-         } else {
-            UserData.findUserByUuid(applicationToken.id).then((user: IUser) => {
-               const token = getToken(user);
-               res.status(200).send({
-                  auth: true,
-                  id: applicationToken.id,
-                  token,
-               });
-            });
+
+         const loginTicket = await user.verifyUser(req.token);
+
+         if (!loginTicket) {
+            throw new MyError(401, "Unauthorized");
          }
+
+         res.status(200).send({
+            auth: true,
+            id: applicationToken.sub,
+            token: req.token,
+         });
+         return;
+      }
+
+      const secret = getJwtSecret();
+
+      if (!secret) {
+         throw new MyError(500, "JWT secret is not configured");
+      }
+
+      try {
+         jwt.verify(req.token, secret);
+      } catch {
+         throw new MyError(401, "Unauthorized");
+      }
+
+      const user = await UserData.findUserByUuid(applicationToken.id);
+
+      if (!user) {
+         throw new MyError(404, "User not found");
+      }
+
+      const token = getToken(user);
+      res.status(200).send({
+         auth: true,
+         id: applicationToken.id,
+         token,
       });
+   } catch (error) {
+      next(error);
    }
 });
 

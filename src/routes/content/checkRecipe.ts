@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import IUserToken from "../../utils/auth/types/usertoken";
 import IRecipe from "../../models/types/recipe";
 import RecipeData from "../../utils/db/Recipes/RecipeData";
+import MyError from "../../types/Error";
 
 const checkRecipe = (req: IAuthRequest, res: any, next: NextFunction) => {
    const recipeId =
@@ -12,22 +13,37 @@ const checkRecipe = (req: IAuthRequest, res: any, next: NextFunction) => {
          ? req.query.id
          : (req.body?.recipe as IRecipe | undefined)?._id;
 
-   checkToken(req, res, () => {
-      if (!recipeId) {
+   checkToken(req, res, async () => {
+      try {
+         if (!recipeId) {
+            next();
+            return;
+         }
+
+         if (!req.token) {
+            throw new MyError(401, "Unauthorized");
+         }
+
+         const decodedToken = jwt.decode(req.token);
+
+         if (!decodedToken || typeof decodedToken === "string") {
+            throw new MyError(401, "Unauthorized");
+         }
+
+         const applicationToken = decodedToken as IUserToken;
+         const recipe = await RecipeData.findRecipeById(recipeId);
+
+         if (!recipe) {
+            throw new MyError(404, "Recipe not found");
+         }
+
+         if (applicationToken.id !== recipe.userUuid) {
+            throw new MyError(403, "Incorrect credentials");
+         }
+
          next();
-      } else {
-         const decodedToken = jwt.decode(req.token) as IUserToken;
-         RecipeData.findRecipeById(recipeId).then((recipe) => {
-            if (recipe) {
-               if (decodedToken.id !== recipe.userUuid) {
-                  res.status(401).send("Incorrect Credentials");
-               } else {
-                  next();
-               }
-            } else {
-               res.status(400).send("Bad Request");
-            }
-         });
+      } catch (error) {
+         next(error);
       }
    });
 };

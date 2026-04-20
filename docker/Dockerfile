@@ -6,7 +6,6 @@ ADD src /app/src
 ADD environment.d.ts /app/environment.d.ts
 ADD package.json /app/package.json
 ADD tsconfig.json /app/tsconfig.json
-ADD tslint.json /app/tslint.json
 
 WORKDIR /app
 

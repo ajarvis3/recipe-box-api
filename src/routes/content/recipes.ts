@@ -1,5 +1,4 @@
 import { Router } from "express";
-import IMetadata from "../../utils/metadata/types/metadata";
 import MyError from "../../types/Error";
 import checkToken from "../../utils/auth/tokenchecker";
 import fetchMetaData from "../../utils/metadata/fetchmetadata";
@@ -9,6 +8,7 @@ import IRecipe from "../../models/types/recipe";
 import jwt from "jsonwebtoken";
 import IAuthRequest from "../../utils/auth/types/authrequest";
 import ApplicationToken from "../../utils/auth/types/ApplicationToken";
+import mongoose from "mongoose";
 
 const router = Router();
 
@@ -17,34 +17,47 @@ router.post("/", checkToken, async (req: IAuthRequest, res, next) => {
    try {
       const { url } = req.body as { url?: string };
 
-      if (!url) {
-         res.status(400).send("Bad Request");
-         return;
+      if (typeof url !== "string" || !url.trim()) {
+         throw new MyError(400, "Missing recipe URL");
       }
 
       const data = await fetchMetaData(url);
 
       if (!data) {
-         next(new MyError(401, "Unauthorized"));
-         return;
+         throw new MyError(422, "Unable to extract recipe metadata");
+      }
+
+      if (!req.token) {
+         throw new MyError(401, "Unauthorized");
       }
 
       const decodedToken = jwt.decode(req.token) as ApplicationToken | null;
 
       if (!decodedToken) {
-         next(new MyError(401, "Unauthorized"));
-         return;
+         throw new MyError(401, "Unauthorized");
       }
 
       const userId =
          "id" in decodedToken ? decodedToken.id : decodedToken.sub;
-      const recipe: IRecipe = await RecipeData.createAndSaveRecipe(
-         data as IMetadata,
-         userId,
-      );
+      const recipe: IRecipe = await RecipeData.createAndSaveRecipe(data, userId);
 
-      res.json(recipe);
+      res.status(201).json(recipe);
    } catch (error) {
+      if (error instanceof mongoose.Error.ValidationError) {
+         next(new MyError(400, "Invalid recipe data", error.message));
+         return;
+      }
+
+      if (
+         typeof error === "object" &&
+         error !== null &&
+         "code" in error &&
+         (error as { code?: number }).code === 11000
+      ) {
+         next(new MyError(409, "Recipe already exists"));
+         return;
+      }
+
       next(error);
    }
 });
@@ -54,12 +67,20 @@ router.patch("/", checkRecipe, async (req, res, next) => {
    try {
       const { recipe } = req.body as { recipe?: IRecipe };
 
-      if (!recipe || req.query.id !== recipe._id) {
-         res.status(400).send("Bad Request");
-         return;
+      if (!recipe || typeof recipe._id !== "string") {
+         throw new MyError(400, "Missing recipe payload");
+      }
+
+      if (req.query.id !== recipe._id) {
+         throw new MyError(400, "Recipe id mismatch");
       }
 
       const recipeResult = await RecipeData.updateRecipe(recipe);
+
+      if (!recipeResult) {
+         throw new MyError(404, "Recipe not found");
+      }
+
       res.json(recipeResult);
    } catch (error) {
       next(error);
@@ -71,6 +92,11 @@ router.get("/", checkRecipe, async (req, res, next) => {
    try {
       if (typeof req.query.id === "string") {
          const recipe = await RecipeData.findRecipeById(req.query.id);
+
+         if (!recipe) {
+            throw new MyError(404, "Recipe not found");
+         }
+
          res.status(200).json(recipe);
          return;
       }
@@ -81,7 +107,7 @@ router.get("/", checkRecipe, async (req, res, next) => {
          return;
       }
 
-      res.status(400).send("Bad Request");
+      throw new MyError(400, "Missing recipe identifier");
    } catch (error) {
       next(error);
    }
@@ -91,11 +117,15 @@ router.get("/", checkRecipe, async (req, res, next) => {
 router.delete("/", checkRecipe, async (req, res, next) => {
    try {
       if (typeof req.query.id !== "string") {
-         res.status(400).send("Bad Request");
-         return;
+         throw new MyError(400, "Missing recipe identifier");
       }
 
       const recipe = await RecipeData.deleteRecipeById(req.query.id);
+
+      if (!recipe) {
+         throw new MyError(404, "Recipe not found");
+      }
+
       res.status(200).json(recipe);
    } catch (error) {
       next(error);

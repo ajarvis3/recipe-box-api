@@ -4,7 +4,6 @@ import IOAuthUserToken from "../../../utils/auth/types/OAuthData.js";
 
 class OAuthUserData {
    createUser = (email: string, name: string, id: string) => {
-      console.log("createUser");
       const _id = id;
       const timeCreated = Date.now();
 
@@ -17,7 +16,6 @@ class OAuthUserData {
    };
 
    saveUser = (user: IOAuthUser) => {
-      console.log("saveUser");
       return user.save();
    };
 
@@ -29,17 +27,17 @@ class OAuthUserData {
       return this.saveUser(this.createUser(email, name, id));
    };
 
-   findOrCreateUser = (decodedToken: IOAuthUserToken) => {
+   findOrCreateUser = async (decodedToken: IOAuthUserToken) => {
       const email = decodedToken.email;
       const name = decodedToken.name;
       const id = decodedToken.sub;
-      return this.findUserByEmail(email).then((user: IOAuthUser) => {
-         if (user) {
-            return this.findUserByEmail(email);
-         } else {
-            return this.createAndSaveUser(email, name, id);
-         }
-      });
+      const existingUser = await this.findUserByEmail(email);
+
+      if (existingUser) {
+         return existingUser;
+      }
+
+      return this.createAndSaveUser(email, name, id);
    };
 
    findUserByEmail = (email: string) => {

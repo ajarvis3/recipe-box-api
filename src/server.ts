@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import * as path from "path";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
@@ -41,19 +41,98 @@ app.use((req, res, next) => {
    next(createError(404));
 });
 
-// error handler
-app.use((err: Error, req: any, res: any, next: any) => {
-   // set locals, only providing error in development
-   if (err instanceof MyError) {
-      res.status(err.status).send("{}");
-   } else {
-      res.locals.message = err.message;
-      res.locals.error = req.app.get("env") === "development" ? err : {};
-
-      // render the error page
-      res.status(500);
-      res.send("error");
+const getErrorStatus = (error: unknown) => {
+   if (error instanceof MyError) {
+      return error.status;
    }
+
+   if (error && typeof error === "object") {
+      const maybeError = error as {
+         status?: unknown;
+         statusCode?: unknown;
+         code?: unknown;
+         name?: string;
+         message?: string;
+      };
+
+      if (typeof maybeError.status === "number") {
+         return maybeError.status;
+      }
+
+      if (typeof maybeError.statusCode === "number") {
+         return maybeError.statusCode;
+      }
+
+      if (maybeError.name === "ValidationError") {
+         return 400;
+      }
+
+      if (maybeError.name === "CastError") {
+         return 400;
+      }
+
+      if (maybeError.code === 11000) {
+         return 409;
+      }
+   }
+
+   return 500;
+};
+
+const getErrorMessage = (
+   error: unknown,
+   status: number,
+   isDevelopment: boolean,
+) => {
+   if (error instanceof MyError) {
+      return error.message;
+   }
+
+   if (error instanceof Error && status < 500) {
+      return error.message;
+   }
+
+   if (isDevelopment && error instanceof Error) {
+      return error.message;
+   }
+
+   return status >= 500 ? "Internal Server Error" : "Request failed";
+};
+
+// error handler
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+   if (res.headersSent) {
+      next(err);
+      return;
+   }
+
+   const status = getErrorStatus(err);
+   const isDevelopment = req.app.get("env") === "development";
+   const message = getErrorMessage(err, status, isDevelopment);
+
+   const body: {
+      error: {
+         message: string;
+         status: number;
+         details?: unknown;
+         stack?: string;
+      };
+   } = {
+      error: {
+         message,
+         status,
+      },
+   };
+
+   if (err instanceof MyError && err.details !== undefined) {
+      body.error.details = err.details;
+   }
+
+   if (isDevelopment && err instanceof Error) {
+      body.error.stack = err.stack;
+   }
+
+   res.status(status).json(body);
 });
 
 // start the Express server

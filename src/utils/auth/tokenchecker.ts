@@ -4,20 +4,26 @@
 
 import { NextFunction, Response } from "express";
 import IAuthRequest from "./types/authrequest";
+import MyError from "../../types/Error";
 
-// Check to make sure header is not undefined, if so, return Forbidden (403)
 const checkToken = (req: IAuthRequest, res: Response, next: NextFunction) => {
-   const header = req.headers.authentication as string;
+   const header =
+      req.get("authorization") ?? req.get("authentication") ?? undefined;
 
-   if (typeof header !== "undefined") {
-      const bearer = header.split(" ");
-      const token = bearer[1];
-
-      req.token = token;
-      next();
-   } else {
-      res.sendStatus(401);
+   if (!header) {
+      next(new MyError(401, "Unauthorized"));
+      return;
    }
+
+   const [scheme, token] = header.split(" ");
+
+   if (scheme.toLowerCase() !== "bearer" || !token) {
+      next(new MyError(401, "Unauthorized"));
+      return;
+   }
+
+   req.token = token;
+   next();
 };
 
 export default checkToken;

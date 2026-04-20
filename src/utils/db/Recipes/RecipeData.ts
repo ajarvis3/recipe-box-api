@@ -28,25 +28,22 @@ class RecipeData {
    };
 
    deleteRecipeById = (id: string) => {
-      return Recipe.findOneAndDelete({ _id: id });
+      return Recipe.findOneAndDelete({ _id: id }).exec();
    };
 
    updateRecipe = (recipe: IRecipe) => {
-      const document = Recipe.findOneAndUpdate(
-         { _id: recipe._id },
-         recipe
-      ).then((updatedRecipe: IRecipe) => {
-         return this.findRecipeById(recipe._id);
-      });
-      return document;
+      return Recipe.findOneAndUpdate({ _id: recipe._id }, recipe, {
+         new: true,
+         runValidators: true,
+      }).exec();
    };
 
    findRecipesByUserId = (id: string) => {
-      return Recipe.find({ userUuid: id });
+      return Recipe.find({ userUuid: id }).exec();
    };
 
    findRecipeById = (id: string) => {
-      return Recipe.findOne({ _id: id }).cursor().next();
+      return Recipe.findOne({ _id: id }).exec();
    };
 }
 
