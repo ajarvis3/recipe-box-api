@@ -16,13 +16,15 @@ router.post("/", (req, res, next) => {
    };
 
    if (!req.body.credential || !req.body.clientId) {
-      failed();
+      return failed();
    }
-   const decoded: IOAuthUserToken = jwt.decode(
-      req.body.credential
-   ) as IOAuthUserToken;
+   const decoded = jwt.decode(req.body.credential);
+   if (!decoded || typeof decoded === "string") {
+      return failed();
+   }
 
-   OAuthUserData.findOrCreateUser(decoded).then((user: IOAuthUser) => {
+   OAuthUserData.findOrCreateUser(decoded as IOAuthUserToken).then(
+      (user: IOAuthUser) => {
       if (user) {
          user
             .verifyUser(req.body.credential)
@@ -39,7 +41,8 @@ router.post("/", (req, res, next) => {
       } else {
          failed();
       }
-   });
+      }
+   );
 });
 
 const oauthRouter = router;

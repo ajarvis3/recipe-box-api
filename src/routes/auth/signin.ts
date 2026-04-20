@@ -13,7 +13,7 @@ router.post("/", (req, res, next) => {
    };
 
    if (!req.body.password || !req.body.email) {
-      failed();
+      return failed();
    }
 
    UserData.findUserByEmail(req.body.email).then((user) => {
