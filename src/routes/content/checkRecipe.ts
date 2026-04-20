@@ -8,9 +8,10 @@ import RecipeData from "../../utils/db/Recipes/RecipeData";
 
 const checkRecipe = (req: IAuthRequest, res: any, next: NextFunction) => {
    const recipeId =
-      (req.query.id as string) || req.body?.recipe
-         ? (req.body?.recipe as IRecipe)?.id
-         : undefined;
+      typeof req.query.id === "string"
+         ? req.query.id
+         : (req.body?.recipe as IRecipe | undefined)?._id;
+
    checkToken(req, res, () => {
       if (!recipeId) {
          next();
