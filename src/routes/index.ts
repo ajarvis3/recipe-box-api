@@ -10,21 +10,15 @@ router.use("/auth", authRouter);
 router.use("/users", usersRouter);
 router.use("/content", contentRouter);
 
+router.get("/liveness", (req, res) => {
+   res.status(200).send();
+});
+
 /* GET home page. */
-router.get(
-   ["/", "**"],
-   (req, res, next) => {
-      if (req.path === "/liveness") {
-         next();
-      } else {
-         const pth = path.join(__dirname, "../../public", "index.html");
-         res.sendFile(pth);
-      }
-   },
-   (req, res) => {
-      res.status(200).send();
-   }
-);
+router.get(["/", "**"], (req, res) => {
+   const pth = path.join(__dirname, "../../public", "index.html");
+   res.sendFile(pth);
+});
 
 const indexRouter = router;
 export default indexRouter;
