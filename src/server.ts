@@ -8,6 +8,8 @@ import indexRouter from "./routes/index";
 
 import cors from "cors";
 
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 8080; // default port to listen
 
@@ -30,8 +32,6 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 
 // routes
 app.use("/", indexRouter);
-
-dotenv.config();
 
 // move to server.ts
 startDb();

@@ -20,16 +20,23 @@ router.post("/", checkToken, (req: IAuthRequest, res, next) => {
       next(err);
    };
 
-   if (!req.token) failed();
+   if (!req.token) {
+      return failed();
+   }
 
-   const decodedToken = jwt.decode(req.token) as ApplicationToken;
-   if ("aud" in decodedToken) {
-      OAuthUserData.findUserByUuid(decodedToken.sub).then(
+   const decodedToken = jwt.decode(req.token);
+   if (!decodedToken || typeof decodedToken === "string") {
+      return failed();
+   }
+
+   const applicationToken = decodedToken as ApplicationToken;
+   if ("aud" in applicationToken) {
+      OAuthUserData.findUserByUuid(applicationToken.sub).then(
          (user: IOAuthUser) => {
             if (user.verifyUser(req.token)) {
                res.status(200).send({
                   auth: true,
-                  id: decodedToken.sub,
+                  id: applicationToken.sub,
                   token: req.token,
                });
             } else {
@@ -42,9 +49,13 @@ router.post("/", checkToken, (req: IAuthRequest, res, next) => {
          if (err) {
             failed();
          } else {
-            UserData.findUserByUuid(decodedToken.id).then((user: IUser) => {
+            UserData.findUserByUuid(applicationToken.id).then((user: IUser) => {
                const token = getToken(user);
-               res.status(200).send({ auth: true, id: decodedToken.id, token });
+               res.status(200).send({
+                  auth: true,
+                  id: applicationToken.id,
+                  token,
+               });
             });
          }
       });
