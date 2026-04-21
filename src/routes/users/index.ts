@@ -1,4 +1,4 @@
-import signupRouter from "./signup";
+import signupRouter from "./signup.js";
 import * as express from "express";
 
 const router = express.Router();

@@ -1,6 +1,6 @@
 import { LoginTicket } from "google-auth-library";
 import mongoose from "mongoose";
-import IOAuthUserToken from "../../utils/auth/types/OAuthData";
+import IOAuthUserToken from "../../utils/auth/types/OAuthData.js";
 
 interface IOAuthUser extends mongoose.Document {
    _id: string;

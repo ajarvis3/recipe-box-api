@@ -1,15 +1,15 @@
 import * as express from "express";
-import getToken from "../../utils/auth/tokengenerator";
-import checkToken from "../../utils/auth/tokenchecker";
+import getToken from "../../utils/auth/tokengenerator.js";
+import checkToken from "../../utils/auth/tokenchecker.js";
 import jwt from "jsonwebtoken";
-import IAuthRequest from "../../utils/auth/types/authrequest";
-import IUser from "../../models/types/user";
-import UserData from "../../utils/db/User/UserData";
-import MyError from "../../types/Error";
-import ApplicationToken from "../../utils/auth/types/ApplicationToken";
-import OAuthUserData from "../../utils/db/User/OAuthUserData";
-import IOAuthUser from "../../models/types/oauth";
-import getJwtSecret from "../../utils/auth/secret";
+import IAuthRequest from "../../utils/auth/types/authrequest.js";
+import IUser from "../../models/types/user.js";
+import UserData from "../../utils/db/User/UserData.js";
+import MyError from "../../types/Error.js";
+import ApplicationToken from "../../utils/auth/types/ApplicationToken.js";
+import OAuthUserData from "../../utils/db/User/OAuthUserData.js";
+import IOAuthUser from "../../models/types/oauth.js";
+import getJwtSecret from "../../utils/auth/secret.js";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 import { Request } from "express";
 
 interface IAuthRequest extends Request {
-   token: string;
+   token?: string;
 }
 
 export default IAuthRequest;

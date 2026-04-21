@@ -3,7 +3,7 @@
  */
 
 import mongoose from "mongoose";
-import IRecipe from "./types/recipe";
+import IRecipe from "./types/recipe.js";
 
 const RecipeSchema = new mongoose.Schema<IRecipe>(
    {
@@ -42,7 +42,7 @@ const RecipeSchema = new mongoose.Schema<IRecipe>(
          require: true,
       },
    },
-   { _id: false }
+   { _id: false },
 );
 
 RecipeSchema.methods.addTag = function (tag: string) {

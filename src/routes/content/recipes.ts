@@ -1,13 +1,13 @@
 import { Router } from "express";
-import MyError from "../../types/Error";
-import checkToken from "../../utils/auth/tokenchecker";
-import fetchMetaData from "../../utils/metadata/fetchmetadata";
-import RecipeData from "../../utils/db/Recipes/RecipeData";
-import checkRecipe from "./checkRecipe";
-import IRecipe from "../../models/types/recipe";
+import MyError from "../../types/Error.js";
+import checkToken from "../../utils/auth/tokenchecker.js";
+import fetchMetaData from "../../utils/metadata/fetchmetadata.js";
+import RecipeData from "../../utils/db/Recipes/RecipeData.js";
+import checkRecipe from "./checkRecipe.js";
+import IRecipe from "../../models/types/recipe.js";
 import jwt from "jsonwebtoken";
-import IAuthRequest from "../../utils/auth/types/authrequest";
-import ApplicationToken from "../../utils/auth/types/ApplicationToken";
+import IAuthRequest from "../../utils/auth/types/authrequest.js";
+import ApplicationToken from "../../utils/auth/types/ApplicationToken.js";
 import mongoose from "mongoose";
 
 const router = Router();
@@ -27,6 +27,7 @@ router.post("/", checkToken, async (req: IAuthRequest, res, next) => {
          throw new MyError(422, "Unable to extract recipe metadata");
       }
 
+      console.log(req.token);
       if (!req.token) {
          throw new MyError(401, "Unauthorized");
       }
@@ -37,9 +38,11 @@ router.post("/", checkToken, async (req: IAuthRequest, res, next) => {
          throw new MyError(401, "Unauthorized");
       }
 
-      const userId =
-         "id" in decodedToken ? decodedToken.id : decodedToken.sub;
-      const recipe: IRecipe = await RecipeData.createAndSaveRecipe(data, userId);
+      const userId = "id" in decodedToken ? decodedToken.id : decodedToken.sub;
+      const recipe: IRecipe = await RecipeData.createAndSaveRecipe(
+         data,
+         userId,
+      );
 
       res.status(201).json(recipe);
    } catch (error) {
@@ -119,6 +122,8 @@ router.delete("/", checkRecipe, async (req, res, next) => {
       if (typeof req.query.id !== "string") {
          throw new MyError(400, "Missing recipe identifier");
       }
+
+      console.log("Deleting recipe with id:", req.query.id);
 
       const recipe = await RecipeData.deleteRecipeById(req.query.id);
 

@@ -4,9 +4,12 @@ import * as path from "path";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
-import indexRouter from "./routes/index";
+import indexRouter from "./routes/index.js";
 
 import cors from "cors";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -19,8 +22,9 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 import engine from "consolidate";
-import startDb from "./utils/db/connect";
-import MyError from "./types/Error";
+import startDb from "./utils/db/connect.js";
+import MyError from "./types/Error.js";
+import { fileURLToPath } from "url";
 
 app.set("view engine", "html");
 app.engine("html", engine.mustache);

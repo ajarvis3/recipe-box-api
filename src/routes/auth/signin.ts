@@ -1,7 +1,7 @@
 import * as express from "express";
-import UserData from "../../utils/db/User/UserData";
-import getToken from "../../utils/auth/tokengenerator";
-import MyError from "../../types/Error";
+import UserData from "../../utils/db/User/UserData.js";
+import getToken from "../../utils/auth/tokengenerator.js";
+import MyError from "../../types/Error.js";
 import mongoose from "mongoose";
 
 const router = express.Router();

@@ -1,9 +1,9 @@
 import * as express from "express";
-import OAuthUserData from "../../utils/db/User/OAuthUserData";
-import MyError from "../../types/Error";
+import OAuthUserData from "../../utils/db/User/OAuthUserData.js";
+import MyError from "../../types/Error.js";
 import jwt from "jsonwebtoken";
-import IOAuthUserToken from "../../utils/auth/types/OAuthData";
-import IOAuthUser from "../../models/types/oauth";
+import IOAuthUserToken from "../../utils/auth/types/OAuthData.js";
+import IOAuthUser from "../../models/types/oauth.js";
 import mongoose from "mongoose";
 
 const router = express.Router();

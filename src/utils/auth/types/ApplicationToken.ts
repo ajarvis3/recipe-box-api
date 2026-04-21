@@ -1,5 +1,5 @@
-import IOAuthUserToken from "./OAuthData";
-import IUserToken from "./usertoken";
+import IOAuthUserToken from "./OAuthData.js";
+import IUserToken from "./usertoken.js";
 
 type ApplicationToken = IUserToken | IOAuthUserToken;
 

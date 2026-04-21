@@ -1,15 +1,15 @@
-import IUser from "../../../models/types/user";
-import User from "../../../models/user";
+import IUser from "../../../models/types/user.js";
+import User from "../../../models/user.js";
 import { v4 as uuidv4 } from "uuid";
-import { getSalt } from "../../auth";
-import { hashPassword } from "../../auth";
+import { getSalt , hashPassword } from "../../auth/index.js";
+
 
 class UserData {
    createUser = (
       email: string,
       password: string,
       firstName: string,
-      lastName: string
+      lastName: string,
    ) => {
       const _id = uuidv4();
       const timeCreated = Date.now();
@@ -35,10 +35,10 @@ class UserData {
       email: string,
       password: string,
       firstName: string,
-      lastName: string
+      lastName: string,
    ): Promise<IUser> => {
       return this.saveUser(
-         this.createUser(email, password, firstName, lastName)
+         this.createUser(email, password, firstName, lastName),
       );
    };
 

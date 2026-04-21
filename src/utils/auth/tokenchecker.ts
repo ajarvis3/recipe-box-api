@@ -3,8 +3,8 @@
  */
 
 import { NextFunction, Response } from "express";
-import IAuthRequest from "./types/authrequest";
-import MyError from "../../types/Error";
+import IAuthRequest from "./types/authrequest.js";
+import MyError from "../../types/Error.js";
 
 const checkToken = (req: IAuthRequest, res: Response, next: NextFunction) => {
    const header =

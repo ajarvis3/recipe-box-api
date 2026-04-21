@@ -3,9 +3,9 @@
  */
 
 import mongoose from "mongoose";
-import getSalt from "../utils/auth/salting";
-import hashPassword from "../utils/auth/hashing";
-import IUser from "./types/user";
+import getSalt from "../utils/auth/salting.js";
+import hashPassword from "../utils/auth/hashing.js";
+import IUser from "./types/user.js";
 
 const UserSchema = new mongoose.Schema<IUser>(
    {

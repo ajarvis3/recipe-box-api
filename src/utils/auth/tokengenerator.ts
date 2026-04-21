@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import IUser from "../../models/types/user";
-import MyError from "../../types/Error";
-import getJwtSecret from "./secret";
+import IUser from "../../models/types/user.js";
+import MyError from "../../types/Error.js";
+import getJwtSecret from "./secret.js";
 
 const getToken = (user: IUser) => {
    const secret = getJwtSecret();

@@ -1,17 +1,17 @@
 {
    "compilerOptions": {
-      "module": "commonjs",
-      "moduleResolution": "node",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "esModuleInterop": true,
-      "target": "es2020",
-      "lib": ["es2020", "dom"],
+      "target": "es2022",
+      "lib": ["es2022", "dom"],
       "allowSyntheticDefaultImports": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
       "noImplicitAny": true,
       "sourceMap": true,
       "outDir": "dist",
-      "baseUrl": "."
+      "rootDir": "src"
    },
    "include": ["src/**/*"]
 }

@@ -12,6 +12,12 @@ declare global {
          secret?: string;
       }
    }
+
+   namespace Express {
+      interface Request {
+         token?: string;
+      }
+   }
 }
 
 export {};
