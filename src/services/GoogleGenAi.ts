@@ -16,12 +16,13 @@ export async function pullRecipeFromUrl(url: string): Promise<string> {
    console.log(
       "Initializing GoogleGenAI model with system instructions for pulling recipe from URL",
    );
-   console.log("Generating content from model to pull recipe from URL:", url);
-   const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: `URL: ${url}`,
-      config: {
-         systemInstruction: `
+   const response = ai.models
+      .generateContent({
+         model: GEMINI_MODEL,
+         contents: `URL: ${url}`,
+         config: {
+            temperature: 0.2, // we want this to be as deterministic as possible, since we're relying on the output to be in a specific format
+            systemInstruction: `
             You are a helpful assistant for parsing recipes from the web.
             Given a URL, you will pull the ingredients and instructions for
             the recipe on that page and return it as a string.
@@ -33,10 +34,16 @@ export async function pullRecipeFromUrl(url: string): Promise<string> {
             You should output the minimum necessary text to convey the
             ingredients and instructions, and omit any extraneous information.
             `,
-      },
-   });
-   console.log(response);
-   return response.text ?? "";
+         },
+      })
+      .then((response: GenerateContentResponse) => {
+         console.log(response.text);
+         return response.text ?? "";
+      })
+      .catch((e: Error) => {
+         console.log("Failed to pull recipe from URL:", e);
+      });
+   return (await response) ?? "";
 }
 
 export async function pullRecipeMetadataFromUrl(
@@ -53,6 +60,7 @@ export async function pullRecipeMetadataFromUrl(
          model: GEMINI_MODEL,
          contents: `URL: ${url}`,
          config: {
+            temperature: 0.2, // we want this to be as deterministic as possible, since we're relying on the output to be in a specific format
             systemInstruction: `
             You are a helpful assistant for parsing recipe metadata from the web.
             Given a URL, you will pull the title, description, author, and image for
@@ -80,11 +88,12 @@ export async function pullRecipeMetadataFromUrl(
 
             You should output the minimum necessary text to convey the
             metadata, and omit any extraneous information.
+            The output must be returned as parsable JSON in the exact format specified above.
             `,
          },
       })
       .then((response: GenerateContentResponse) => {
-         console.log(response);
+         console.log(response.text);
          const metadata = response.text;
          try {
             if (!metadata) {
@@ -99,7 +108,7 @@ export async function pullRecipeMetadataFromUrl(
             builder.setProperty("og:site_name", parsed.source);
             return builder.build();
          } catch (e) {
-            console.error("Failed to parse metadata response:", e);
+            console.log("Failed to parse metadata response:", e);
             throw new Error("Failed to parse metadata response");
          }
       });
